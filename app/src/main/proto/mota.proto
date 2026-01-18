@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.example.grpc";
+
+option csharp_namespace = "AMoverGRPC";
+
+message MotaRequest {
+  string vin = 1;
+}
+
+message MotaResponse {
+  string vin = 1; 
+  int32 battery = 2;
+  int32 kilometers = 3;
+  double latitude = 4;
+  double longitude = 5; 
+}
+
+service MotasService {
+  rpc GetMotaInfo (MotaRequest) returns (MotaResponse);
+}
