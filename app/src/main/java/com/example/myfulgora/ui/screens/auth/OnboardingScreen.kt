@@ -1,4 +1,4 @@
-package com.example.myfulgora.ui.screens
+package com.example.myfulgora.ui.screens.auth
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -72,14 +72,14 @@ fun OnboardingScreen(onFinish: () -> Unit) {
             // Adicionei um Spacer para dar "ar" no topo como no mockup
             Spacer(modifier = Modifier.height(20.dp))
 
-            Image(
-                painter = painterResource(R.drawable.logo_app),
-                contentDescription = "Logo",
-                modifier = Modifier
-                    .width(280.dp)
-                    .aspectRatio(160f / 50f), // mantém proporção original
-                contentScale = ContentScale.Fit
-            )
+//            Image(
+//                painter = painterResource(R.drawable.logo_app),
+//                contentDescription = "Logo",
+//                modifier = Modifier
+//                    .width(280.dp)
+//                    .aspectRatio(160f / 50f), // mantém proporção original
+//                contentScale = ContentScale.Fit
+//            )
 
             // --- CENTRO: CARROSSEL (PAGER) ---
             // O weight(1f) empurra o topo para cima e o rodapé para baixo, ocupando o meio

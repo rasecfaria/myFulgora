@@ -1,4 +1,4 @@
-package com.example.myfulgora.ui.screens
+package com.example.myfulgora.ui.screens.auth
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -37,7 +37,8 @@ import com.example.myfulgora.ui.theme.GreenDeep
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel = viewModel(),
-    onLoginSuccess: () -> Unit
+    onLoginSuccess: () -> Unit,
+    onForgotPasswordClick: () -> Unit
 ) {
     val state by viewModel.loginState.collectAsState()
     val username by viewModel.username.collectAsState()
@@ -156,8 +157,12 @@ fun LoginScreen(
 
             // Link Esqueci a Password
             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd) {
-                TextButton(onClick = { /* TODO */ }) {
-                    Text("Forgot Password?", color = GreenDeep, fontSize = 12.sp)
+                TextButton(
+                    // 2. Aqui usamos o parâmetro novo.
+                    // Quando clicas, ele dispara o aviso para a MainActivity.
+                    onClick = onForgotPasswordClick
+                ) {
+                    Text("Forgot Password?", color = GreenFresh, fontSize = 12.sp)
                 }
             }
 

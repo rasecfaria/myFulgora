@@ -4,16 +4,16 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-// O import abaixo deve corresponder à pasta onde criaste o HomeScreen.
-// Se ficar vermelho, apaga a linha e volta a escrever "HomeScreen()" lá em baixo para o Android Studio sugerir o import.
-import com.example.myfulgora.ui.screens.HomeScreen
 import com.example.myfulgora.ui.theme.MyFulgoraTheme
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myfulgora.ui.screens.SplashScreen
-import com.example.myfulgora.ui.screens.OnboardingScreen
-import com.example.myfulgora.ui.screens.LoginScreen
+import com.example.myfulgora.ui.screens.auth.OnboardingScreen
+import com.example.myfulgora.ui.screens.auth.LoginScreen
+import com.example.myfulgora.ui.screens.auth.ForgotPasswordScreen
+import com.example.myfulgora.ui.screens.MainScreen
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,50 +22,58 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MyFulgoraTheme {
-                // Sistema de Navegação simples
                 val navController = rememberNavController()
 
-                // Define as rotas (caminhos) da app
+                // DICA: Para testares rápido, muda "splash" para "login" temporariamente
                 NavHost(navController = navController, startDestination = "splash") {
 
-                    // 1. Ecrã de Splash (Novo)
+                    // 1. Splash
                     composable("splash") {
                         SplashScreen(
                             onSplashFinished = {
-                                // Quando passarem 2 segundos, vai para o Onboarding
                                 navController.navigate("onboarding") {
-                                    popUpTo("splash") { inclusive = true } // Remove a splash da memória
+                                    popUpTo("splash") { inclusive = true }
                                 }
                             }
                         )
                     }
 
-                    // 2. Ecrã de Onboarding
+                    // 2. Onboarding
                     composable("onboarding") {
                         OnboardingScreen(
                             onFinish = {
-                                navController.navigate("login") {
-                                    // Não deixa voltar ao onboarding depois de acabar
+                                navController.navigate("home") {
                                     popUpTo("onboarding") { inclusive = true }
                                 }
                             }
                         )
                     }
 
-                    // 3. Ecrã de Login
+                    // 3. Login
                     composable("login") {
                         LoginScreen(
-                            onLoginSuccess = {
-                                navController.navigate("home") {
-                                    popUpTo("login") { inclusive = true }
+                            onLoginSuccess = { navController.navigate("home") },
+                            onForgotPasswordClick = { navController.navigate("forgot_password") }
+                        )
+                    }
+
+                    // 4. Forgot Password
+                    composable("forgot_password") {
+                        ForgotPasswordScreen(
+                            onNavigateBack = {
+                                navController.popBackStack() // Volta para trás
+                            },
+                            onLoginAfterReset = {
+                                navController.navigate("login") { // Vai para o Login
+                                    popUpTo("forgot_password") { inclusive = true }
                                 }
                             }
                         )
                     }
 
-                    // 4. Ecrã Home
+                    // 5. Home (Dashboard Principal)
                     composable("home") {
-                        HomeScreen()
+                        MainScreen()
                     }
                 }
             }
