@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.myfulgora.ui.screens.tabs.   HomeScreen
+import com.example.myfulgora.ui.screens.tabs.HomeScreen
 import com.example.myfulgora.ui.theme.BlackBrand
 import com.example.myfulgora.ui.theme.GreenFresh
 import com.example.myfulgora.ui.screens.auth.ForgotPasswordScreen
@@ -46,7 +46,7 @@ fun MainScreen() {
                 )
 
                 // Variável para saber qual está selecionado
-                var selectedItem by remember { mutableIntStateOf(0) }
+                var selectedItem by remember { mutableIntStateOf(2)}
 
                 items.forEachIndexed { index, item ->
                     NavigationBarItem(
@@ -79,7 +79,7 @@ fun MainScreen() {
             startDestination = "home",
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable("map") { Text("Ecrã Mapa (Em construção)", color = Color.White) }
+            composable("map") { MapScreen() }
             composable("battery") { BatteryScreen() }
             composable("home") { HomeScreen() }
             composable("social") { Text("Ecrã Social (Em construção)", color = Color.White) }
