@@ -14,12 +14,14 @@ object Dimens {
     val TopPadding = 16.dp
 
     // Espaço final para o Scroll não bater na BottomBar
-    val ScrollBottomPadding = 100.dp
+    val ScrollBottomPadding = 50.dp
 
     // --- TAMANHOS DE TEXTO (Opcional, se quiseres centralizar) ---
+    val SpacingSmallPlus = 6.dp
     val SpacingSmall = 12.dp
     val TextSizeSmall = 12.sp
     val TextSizeNormal = 14.sp
+    val TextSizeSubTitle = 17.sp
     val TextSizeTitle = 20.sp
     val TextSizeHeader = 28.sp
 

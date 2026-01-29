@@ -134,7 +134,7 @@ fun HomeScreen() {
                     }
 
                     Image(
-                        painter = painterResource(id = R.drawable.mota),
+                        painter = painterResource(id = R.drawable.mota_crop),
                         contentDescription = "Mota",
                         modifier = Modifier.fillMaxSize(0.85f)
                     )
