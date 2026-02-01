@@ -9,6 +9,7 @@ val BlackBrand = Color(0xFF000000)   // "Black" - O fundo absoluto
 
 // Cores Auxiliares (Para fundos e textos)
 val White = Color(0xFFFFFFFF)
+var DarkWhite =Color(0xFFE0E0E0)
 val GrayDark = Color(0xFF1E293B)     // Usado nos nossos fundos atuais
 val GrayLight = Color(0xFFB0BEC5)
 val RedError = Color(0xFFFF5252)

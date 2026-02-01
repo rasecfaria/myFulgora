@@ -30,4 +30,7 @@ object Dimens {
     const val IconScaleRatio = 0.07f    // 7% da largura para ícones
     const val SideMarginRatio = 0.06f   // 6% da largura para margem lateral
     const val BikeHeightRatio = 0.25f   // 25% da altura para a mota
+
+    //Circulo
+    const val HomeCircleRatio = 0.70f
 }

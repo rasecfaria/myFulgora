@@ -1,33 +1,45 @@
-package com.example.myfulgora.ui.screens.performance
+package com.example.myfulgora.ui.screens.tabs
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ChevronLeft
 import androidx.compose.material.icons.rounded.ChevronRight
+import androidx.compose.material.icons.rounded.Eco
+import androidx.compose.material.icons.rounded.KeyboardArrowRight
+import androidx.compose.material.icons.rounded.Place
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.myfulgora.R
 import com.example.myfulgora.ui.components.FulgoraBackground
 import com.example.myfulgora.ui.components.FulgoraInfoCard
 import com.example.myfulgora.ui.components.FulgoraTopBar
+import com.example.myfulgora.ui.theme.AppIcons
+import com.example.myfulgora.ui.theme.DarkWhite
 import com.example.myfulgora.ui.theme.Dimens
-import com.example.myfulgora.ui.theme.GrayDark
-import com.example.myfulgora.ui.theme.GreenFresh
 import com.example.myfulgora.ui.theme.GrayLight
+import com.example.myfulgora.ui.theme.GreenFresh
 
 @Composable
-fun PerformanceScreen() {
+fun PerformanceScreen(
+    onMenuClick: () -> Unit = {}
+) {
     FulgoraBackground {
         BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
 
@@ -38,9 +50,7 @@ fun PerformanceScreen() {
             val iconSize = screenW * Dimens.IconScaleRatio
             val bikeHeight = screenH * Dimens.BikeHeightRatio
             val paddingSide = screenW * Dimens.SideMarginRatio
-
-            val iconSizeStandard = screenW * 0.07f // Ícones normais
-            val iconSizeSmall = screenW * 0.05f    // Ícones pequenos
+            val iconSizeStandard = screenW * 0.07f
 
             val scrollState = rememberScrollState()
 
@@ -49,13 +59,13 @@ fun PerformanceScreen() {
                     .fillMaxSize()
                     .verticalScroll(scrollState)
                     .padding(horizontal = paddingSide)
-                    .padding(top = Dimens.TopPadding) // 16.dp fixo no topo
+                    .padding(top = Dimens.TopPadding)
             ) {
 
-                // 1. HEADER (Agora é um item normal da lista)
-                // Quando dás scroll para baixo, isto desaparece naturalmente.
+                // 1. HEADER
                 FulgoraTopBar(
-                    iconSize = iconSize
+                    iconSize = iconSize,
+                    onMenuClick = onMenuClick
                 )
 
                 Spacer(modifier = Modifier.height(Dimens.PaddingExtraLarge))
@@ -88,7 +98,6 @@ fun PerformanceScreen() {
                     Image(
                         painter = painterResource(id = R.drawable.mota_crop),
                         contentDescription = "Mota",
-
                         modifier = Modifier.fillMaxSize(0.85f)
                     )
                     Icon(Icons.Rounded.ChevronLeft, contentDescription = null, tint = Color.Gray, modifier = Modifier.align(Alignment.CenterStart).size(iconSizeStandard))
@@ -97,46 +106,42 @@ fun PerformanceScreen() {
 
                 Spacer(modifier = Modifier.height(Dimens.PaddingLarge))
 
-                // 4. GRELHA DE CARTÕES
+                // 4. GRELHA DE CARTÕES (Tyres & Service)
                 Row(modifier = Modifier.fillMaxWidth()) {
                     FulgoraInfoCard(modifier = Modifier.weight(1f)) {
-                        // 1. Criamos uma Box que ocupa a largura toda
                         Box(modifier = Modifier.fillMaxWidth()) {
-
-                            // 2. O TEU CONTEÚDO (Texto)
-                            // Agrupamos numa Column para ficarem uns debaixo dos outros
-                            Column(
-                                // Damos um padding à direita na Column para o texto não ficar por cima do ícone
-                                modifier = Modifier.padding(end = Dimens.PaddingMedium)
-                            ) {
+                            Column(modifier = Modifier.padding(end = Dimens.PaddingMedium)) {
                                 Text("Tyre Pressure", color = GrayLight, fontSize = Dimens.TextSizeSubTitle)
                                 Text("Normal", color = GreenFresh, fontSize = Dimens.TextSizeSmall)
-
                                 Spacer(modifier = Modifier.height(Dimens.SpacingSmallPlus))
-
                                 Text("Front 32 PSI", color = Color.White, fontWeight = FontWeight.Bold, fontSize = Dimens.TextSizeNormal)
                                 Text("Rear 32 PSI", color = Color.White, fontWeight = FontWeight.Bold, fontSize = Dimens.TextSizeNormal)
                             }
-
-                            // 3. O ÍCONE (Canto Superior Direito)
                             Icon(
-                                // Substitui pelo teu ícone (ex: R.drawable.ic_pneu)
-                                painter = painterResource(id = R.drawable.arrow_bike_right),
+                                painter = painterResource(id = AppIcons.Performance.tyre_pressure),
                                 contentDescription = null,
-                                tint = GreenFresh, // Ou Color.Gray, conforme o design
-                                modifier = Modifier
-                                    .size(24.dp) // Tamanho do ícone
-                                    .align(Alignment.TopEnd) // 👈 O SEGREDO: Alinha ao topo à direita
+                                tint = GreenFresh,
+                                modifier = Modifier.size(24.dp).align(Alignment.TopEnd)
                             )
                         }
                     }
-
                     Spacer(modifier = Modifier.width(Dimens.PaddingMedium))
-
                     FulgoraInfoCard(modifier = Modifier.weight(1f)) {
-                        Text("Next Service", color = Color.Gray, fontSize = Dimens.TextSizeSmall)
-                        Spacer(modifier = Modifier.height(Dimens.SpacingSmall))
-                        Text("320 km", color = Color.White, fontWeight = FontWeight.Bold, fontSize = Dimens.TextSizeNormal)
+                        Box(modifier = Modifier.fillMaxWidth()) {
+                            Column(modifier = Modifier.padding(end = Dimens.PaddingMedium)) {
+                                Text("Next Service", color = GrayLight, fontSize = Dimens.TextSizeSubTitle)
+                                Text("No service due", color = GreenFresh, fontSize = Dimens.TextSizeSmall)
+                                Spacer(modifier = Modifier.height(Dimens.SpacingSmallPlus))
+                                Text("Next service in", color = Color.Gray, fontSize = Dimens.TextSizeNormal)
+                                Text("320 km", color = Color.White, fontWeight = FontWeight.Bold, fontSize = Dimens.TextSizeNormal)
+                            }
+                            Icon(
+                                painter = painterResource(id = AppIcons.Performance.next_service),
+                                contentDescription = null,
+                                tint = GreenFresh,
+                                modifier = Modifier.size(24.dp).align(Alignment.TopEnd)
+                            )
+                        }
                     }
                 }
 
@@ -144,65 +149,172 @@ fun PerformanceScreen() {
 
                 // 5. CARTÃO DE PERFORMANCE
                 FulgoraInfoCard {
-                    Text("Performance", color = Color.Gray, fontSize = Dimens.TextSizeSmall)
-                    Spacer(modifier = Modifier.height(Dimens.SpacingSmall))
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Column {
-                            Text("Energy", color = Color.Gray, fontSize = Dimens.TextSizeSmall)
-                            Text("0.9 kWh", color = Color.White, fontWeight = FontWeight.Bold)
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            Column(modifier = Modifier.padding(end = 32.dp)) {
+                                Text("Performance", color = GrayLight, fontSize = Dimens.TextSizeTitle)
+                            }
+                            Spacer(modifier = Modifier.height(Dimens.SpacingSmallPlus))
+                            Row(modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min), verticalAlignment = Alignment.CenterVertically) {
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text("Energy Consumption", color = DarkWhite, fontSize = Dimens.TextSizeSubTitle)
+                                    Text("Last 7 days", color = Color.Gray, fontSize = Dimens.TextSizeNormal)
+                                    Text("0.9 kWh", color = Color.White, fontWeight = FontWeight.Bold, fontSize = Dimens.TextSizeSubTitle)
+                                }
+                                Box(modifier = Modifier.padding(horizontal = Dimens.PaddingMedium).width(1.dp).fillMaxHeight(0.8f).background(Color.Gray.copy(alpha = 0.3f)))
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text("Average Speed", color = DarkWhite, fontSize = Dimens.TextSizeSubTitle)
+                                    Text("Based on recent trips", color = Color.Gray, fontSize = Dimens.TextSizeNormal)
+                                    Text("42 km/h", color = Color.White, fontWeight = FontWeight.Bold, fontSize = Dimens.TextSizeSubTitle)
+                                }
+                            }
                         }
-                        Column {
-                            Text("Avg Speed", color = Color.Gray, fontSize = Dimens.TextSizeSmall)
-                            Text("42 km/h", color = Color.White, fontWeight = FontWeight.Bold)
-                        }
+                        Icon(painter = painterResource(id = AppIcons.Performance.performance), contentDescription = null, tint = GreenFresh, modifier = Modifier.size(24.dp).align(Alignment.TopEnd))
                     }
                 }
+
                 Spacer(modifier = Modifier.height(Dimens.PaddingSmall))
 
-                //RECENT TRIPS
+                // 6. RECENT TRIPS
                 FulgoraInfoCard {
-                    Text("Recent Trips", color = Color.Gray, fontSize = Dimens.TextSizeSmall)
-                    Spacer(modifier = Modifier.height(Dimens.SpacingSmall))
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Column {
-                            Text("Energy", color = Color.Gray, fontSize = Dimens.TextSizeSmall)
-                            Text("0.9 kWh", color = Color.White, fontWeight = FontWeight.Bold)
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text("Recent Trips", color = GrayLight, fontSize = Dimens.TextSizeTitle)
+                            Text(
+                                "View All",
+                                color = GreenFresh,
+                                fontSize = Dimens.TextSizeSmall,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.clickable { /* Navegar para histórico */ }
+                            )
                         }
-                        Column {
-                            Text("Avg Speed", color = Color.Gray, fontSize = Dimens.TextSizeSmall)
-                            Text("42 km/h", color = Color.White, fontWeight = FontWeight.Bold)
-                        }
+
+                        Spacer(modifier = Modifier.height(Dimens.PaddingMedium))
+
+                        RecentTripRow(
+                            date = "Today, 14:20",
+                            route = "Home - Office",
+                            distance = "12 km",
+                            energy = "0.4 kWh"
+                        )
+                        HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp), color = Color.Gray.copy(alpha = 0.1f))
+
+                        RecentTripRow(
+                            date = "Yesterday, 18:30",
+                            route = "Office - Gym",
+                            distance = "5 km",
+                            energy = "0.1 kWh"
+                        )
+                        HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp), color = Color.Gray.copy(alpha = 0.1f))
+
+                        RecentTripRow(
+                            date = "12 Oct, 09:00",
+                            route = "Weekend Ride",
+                            distance = "45 km",
+                            energy = "1.2 kWh"
+                        )
                     }
                 }
+
                 Spacer(modifier = Modifier.height(Dimens.PaddingSmall))
 
-                //SUSTAINABILITY
+                // 7. SUSTAINABILITY
                 FulgoraInfoCard {
-                    Text("Sustainability", color = Color.Gray, fontSize = Dimens.TextSizeSmall)
-                    Spacer(modifier = Modifier.height(Dimens.SpacingSmall))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.Top
                     ) {
-                        Column {
-                            Text("Co2 emissions avoided", color = Color.Gray, fontSize = Dimens.TextSizeSmall)
-                            Text("Based on your recent rides", color = Color.White, fontWeight = FontWeight.Bold)
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text("Sustainability", color = GrayLight, fontSize = Dimens.TextSizeTitle)
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text("CO2 emissions avoided", color = Color.Gray, fontSize = Dimens.TextSizeSmall)
+
+                            Spacer(modifier = Modifier.height(Dimens.SpacingSmall))
+
+                            Row(verticalAlignment = Alignment.Bottom) {
+                                Text(
+                                    "12.4 kg",
+                                    color = Color.White,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 32.sp
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    "saved",
+                                    color = GreenFresh,
+                                    fontSize = Dimens.TextSizeNormal,
+                                    modifier = Modifier.padding(bottom = 6.dp)
+                                )
+                            }
                         }
-                        Column {
-                            Text("12.4 kg", color = Color.White, fontWeight = FontWeight.Bold)
-                        }
+
+                        Icon(
+                            imageVector = Icons.Rounded.Eco,
+                            contentDescription = "Sustainability",
+                            tint = GreenFresh,
+                            modifier = Modifier.size(32.dp)
+                        )
                     }
                 }
 
-                // Espaço final para não bater na barra de navegação
                 Spacer(modifier = Modifier.height(Dimens.ScrollBottomPadding))
             }
         }
+    }
+}
+
+@Composable
+fun RecentTripRow(
+    date: String,
+    route: String,
+    distance: String,
+    energy: String
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .clip(CircleShape)
+                .background(Color.Gray.copy(alpha = 0.1f)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Rounded.Place,
+                contentDescription = null,
+                tint = GreenFresh,
+                modifier = Modifier.size(20.dp)
+            )
+        }
+
+        Spacer(modifier = Modifier.width(Dimens.SpacingSmall))
+
+        Column(modifier = Modifier.weight(1f)) {
+            Text(text = route, color = Color.White, fontWeight = FontWeight.SemiBold, fontSize = Dimens.TextSizeNormal)
+            Text(text = date, color = Color.Gray, fontSize = 12.sp)
+        }
+
+        Column(horizontalAlignment = Alignment.End) {
+            Text(text = distance, color = Color.White, fontWeight = FontWeight.Bold, fontSize = Dimens.TextSizeNormal)
+            Text(text = energy, color = GreenFresh, fontSize = 12.sp)
+        }
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        Icon(
+            imageVector = Icons.Rounded.KeyboardArrowRight,
+            contentDescription = "Details",
+            tint = Color.Gray,
+            modifier = Modifier.size(20.dp)
+        )
     }
 }

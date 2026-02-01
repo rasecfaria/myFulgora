@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -26,6 +27,11 @@ import androidx.compose.ui.unit.sp
 import com.example.myfulgora.ui.theme.BlackBrand
 import com.example.myfulgora.ui.theme.GreenDeep
 import com.example.myfulgora.ui.theme.GreenFresh
+import androidx.compose.material3.NavigationDrawerItem
+import androidx.compose.material3.NavigationDrawerItemDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+
 
 @Composable
 fun FulgoraBackground(
@@ -91,4 +97,26 @@ fun DashboardStat(icon: ImageVector, value: String, label: String) {
         Text(text = value, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 14.sp)
         Text(text = label, color = Color.Gray, fontSize = 12.sp)
     }
+}
+
+@Composable
+fun FulgoraDrawerItem(
+    icon: ImageVector,
+    label: String,
+    onClick: () -> Unit,
+    selected: Boolean = false,
+    textColor: Color = Color.White,
+    iconColor: Color = Color.White
+) {
+    NavigationDrawerItem(
+        icon = { Icon(icon, contentDescription = null, tint = iconColor) },
+        label = { Text(label, color = textColor) },
+        selected = selected,
+        onClick = onClick,
+        colors = NavigationDrawerItemDefaults.colors(
+            unselectedContainerColor = Color.Transparent,
+            selectedContainerColor = Color(0xFF2D2D2D) // Um cinzento ligeiramente mais claro para seleção
+        ),
+        modifier = Modifier.padding(horizontal = 12.dp) // Espaçamento lateral
+    )
 }

@@ -7,273 +7,283 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.rounded.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.material.icons.rounded.Bolt
+import androidx.compose.material.icons.rounded.DirectionsBike
+import androidx.compose.material.icons.rounded.LocationOn
+import androidx.compose.material.icons.rounded.Lock
+import androidx.compose.material.icons.rounded.LockOpen
+import androidx.compose.material.icons.rounded.PowerSettingsNew
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.myfulgora.R
 import com.example.myfulgora.ui.components.FulgoraBackground
+import com.example.myfulgora.ui.components.FulgoraInfoCard
 import com.example.myfulgora.ui.components.FulgoraTopBar
+import com.example.myfulgora.ui.theme.AppIcons
+import com.example.myfulgora.ui.theme.Dimens
 import com.example.myfulgora.ui.theme.GreenFresh
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    onMenuClick: () -> Unit = {}
+) {
+    // Estado para simular o bloqueio/desbloqueio (como no mockup)
+    var isLocked by remember { mutableStateOf(true) }
+
     FulgoraBackground {
-        // 1. A MAGIA: BoxWithConstraints dá-nos o tamanho exato do ecrã atual
-        BoxWithConstraints(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            // Cálculos de Proporção (Ajusta estes valores conforme o teu gosto)
+        BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+
             val screenW = maxWidth
-            val screenH = maxHeight
-
-            // Margens dinâmicas (ex: 6% da largura)
-            val horizontalPadding = screenW * 0.06f
-            val verticalPadding = screenH * 0.03f
-
-            // Tamanhos dinâmicos
-            val iconSizeStandard = screenW * 0.07f // Ícones normais
-            val iconSizeSmall = screenW * 0.05f    // Ícones pequenos
-            val powerButtonSize = screenW * 0.15f  // Botão Power grande
+            val iconSize = screenW * Dimens.IconScaleRatio
+            val paddingSide = screenW * Dimens.SideMarginRatio
+            val circleSize = screenW * Dimens.HomeCircleRatio
+            val strokeWidth = 12.dp
 
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = horizontalPadding)
-                    .padding(bottom = verticalPadding),
+                    .padding(top = Dimens.TopPadding)
+                    .padding(horizontal = paddingSide),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                // 1. HEADER (Passamos o tamanho do ícone)
+                // 1. TOP BAR
                 FulgoraTopBar(
                     title = "Hi, Alex!",
-                    subtitle = "Ready to ride?"
+                    subtitle = "Ready to ride?",
+                    iconSize = iconSize,
+                    onMenuClick = onMenuClick
                 )
-                Spacer(modifier = Modifier.height(verticalPadding))
 
-                // 2. NOME DA MOTA E BATERIA
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    Text(
-                        text = "VIM: 4Y1SL65848Z411439",
-                        color = Color.White,
-                        // Fonte escala com a largura do ecrã
-                        fontSize = getResponsiveTextSize(screenW, 28f),
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(modifier = Modifier.height(screenH * 0.01f))
+                Spacer(modifier = Modifier.height(24.dp))
 
-                    // Pílula da Bateria
-                    Surface(
-                        color = Color(0xFF1E1E1E),
-                        shape = RoundedCornerShape(50),
-                        modifier = Modifier.height(screenH * 0.045f) // Altura relativa
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(horizontal = 12.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Rounded.Bolt,
-                                contentDescription = null,
-                                tint = GreenFresh,
-                                modifier = Modifier.size(iconSizeSmall)
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(
-                                text = "77%",
-                                color = Color.White,
-                                fontSize = getResponsiveTextSize(screenW, 14f)
-                            )
-                        }
-                    }
-                }
-
-                // Espaço Elástico
-                Spacer(modifier = Modifier.weight(1f))
-
-                // 3. A MOTA E O CÍRCULO
-                // Usamos fillMaxWidth com percentagem para garantir que cabe em qualquer largura
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .fillMaxWidth(0.95f)
-                        .aspectRatio(1f)
-                ) {
-                    val strokeWidth = screenW * 0.04f // Espessura do arco relativa à largura
-
-                    Canvas(modifier = Modifier.fillMaxSize()) {
-                        drawArc(
-                            color = Color(0xFF333333),
-                            startAngle = 140f,
-                            sweepAngle = 260f,
-                            useCenter = false,
-                            style = Stroke(width = strokeWidth.toPx(), cap = StrokeCap.Round)
-                        )
-                        drawArc(
-                            color = GreenFresh,
-                            startAngle = 140f,
-                            sweepAngle = 180f,
-                            useCenter = false,
-                            style = Stroke(width = strokeWidth.toPx(), cap = StrokeCap.Round)
-                        )
-                    }
-
-                    Image(
-                        painter = painterResource(id = R.drawable.mota_crop),
-                        contentDescription = "Mota",
-                        modifier = Modifier.fillMaxSize(0.85f)
-                    )
-
-                    // Setas laterais também escalam
-                    Icon(Icons.Rounded.ChevronLeft, contentDescription = null, tint = Color.Gray, modifier = Modifier.align(Alignment.CenterStart).size(iconSizeStandard))
-                    Icon(Icons.Rounded.ChevronRight, contentDescription = null, tint = GreenFresh, modifier = Modifier.align(Alignment.CenterEnd).size(iconSizeStandard))
-                }
-
-                // Espaço Elástico
-                Spacer(modifier = Modifier.weight(1f))
-
-                // 4. CONTROLOS (SWIPE + POWER)
-                Row(
+                // 2. BIKE NAME & MINI STATUS
+                Column(
                     modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalAlignment = Alignment.Start
                 ) {
-                    // Botão Power Dinâmico
-                    IconButton(
-                        onClick = { },
-                        modifier = Modifier
-                            .size(powerButtonSize)
-                            .background(GreenFresh, CircleShape)
+                    Text(
+                        text = "1FA6P8CF3E5100000",
+                        color = Color.White,
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.ExtraBold
+                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            painter = painterResource(id = AppIcons.Dashboard.BatteryTop),
+                            contentDescription = null,
+                            tint = GreenFresh,
+                            modifier = Modifier.size(34.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = if (isLocked) "77%" else "1hr 10m 4s remaining",
+                            color = Color.White,
+                            fontSize = 14.sp
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                // 3. CÍRCULO CENTRAL COM SETAS
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    // Setas de navegação (Mockup)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
-                            Icons.Rounded.PowerSettingsNew,
-                            contentDescription = "Power",
-                            tint = Color.White,
-                            modifier = Modifier.size(powerButtonSize * 0.5f) // Icone é metade do botão
+                            painter = painterResource(id = AppIcons.Dashboard.ArrowLeft0),
+                            contentDescription = null,
+                            tint = Color.Gray.copy(alpha = 0.5f),
+                            modifier = Modifier.size(24.dp)
+                        )
+                        Icon(
+                            painter = painterResource(id = AppIcons.Dashboard.ArrowRight0),
+                            contentDescription = null,
+                            tint = GreenFresh,
+                            modifier = Modifier.size(24.dp)
                         )
                     }
 
-                    Spacer(modifier = Modifier.width(16.dp))
-
-                    // Swipe Area
+                    // Círculo e Mota
                     Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(powerButtonSize) // Mesma altura do botão power
-                            .background(Color(0xFF1E1E1E), RoundedCornerShape(50)),
-                        contentAlignment = Alignment.CenterStart
+                        modifier = Modifier.size(circleSize),
+                        contentAlignment = Alignment.Center
                     ) {
-                        Text(
-                            text = "Swipe to unlock >>",
-                            color = Color.Gray,
-                            fontSize = getResponsiveTextSize(screenW, 14f),
-                            modifier = Modifier.align(Alignment.Center)
-                        )
-                        Box(
-                            modifier = Modifier
-                                .padding(4.dp)
-                                .size(powerButtonSize - 8.dp) // Ajuste fino para caber dentro
-                                .background(GreenFresh, CircleShape),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                Icons.Rounded.Lock,
-                                contentDescription = null,
-                                tint = Color.White,
-                                modifier = Modifier.size(iconSizeSmall)
+                        // A. Arcos
+                        Canvas(modifier = Modifier.fillMaxSize()) {
+                            // Fundo
+                            drawArc(
+                                color = Color.Gray.copy(alpha = 0.2f),
+                                startAngle = 0f,
+                                sweepAngle = 360f,
+                                useCenter = false,
+                                style = Stroke(width = strokeWidth.toPx())
                             )
+                            // Progresso (Verde)
+                            drawArc(
+                                color = GreenFresh,
+                                startAngle = -90f,
+                                sweepAngle = 280f, // 78% simulado
+                                useCenter = false,
+                                style = Stroke(width = strokeWidth.toPx(), cap = StrokeCap.Round)
+                            )
+                        }
+
+                        // B. A Mota (Sozinha no meio)
+                        Image(
+                            painter = painterResource(id = AppIcons.Dashboard.MainBike),
+                            contentDescription = "My Bike",
+                            modifier = Modifier
+                                .fillMaxWidth(1f)
+                                .aspectRatio(1.4f)
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                // 4. BOTÕES DE ACÇÃO (Power & Lock Slider)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp), // Altura fixa dos botões
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    // --- BOTÃO POWER (40%) ---
+                    Surface(
+                        modifier = Modifier
+                            .weight(0.4f)      // 👈 Ocupa 40% da largura disponível
+                            .fillMaxHeight(),  // Ocupa toda a altura da linha (56dp)
+                        shape = RoundedCornerShape(28.dp), // Forma de "Pílula" para acompanhar o esticão
+                        color = if (isLocked) GreenFresh else Color(0xFF1E1E1E),
+                        // Adicionei onClick vazio ou com lógica se quiseres que ele faça algo
+                        onClick = { /* Lógica do Power */ }
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Icon(
+                                imageVector = Icons.Rounded.PowerSettingsNew,
+                                contentDescription = "Power",
+                                tint = if (isLocked) Color.Black else Color.Gray,
+                                modifier = Modifier.size(28.dp)
+                            )
+                        }
+                    }
+
+                    // --- SLIDER LOCK/UNLOCK (60%) ---
+                    Surface(
+                        modifier = Modifier
+                            .weight(0.6f)      // 👈 Ocupa os restantes 60%
+                            .fillMaxHeight(),
+                        shape = RoundedCornerShape(28.dp),
+                        color = if (isLocked) Color(0xFF1E1E1E) else GreenFresh,
+                        onClick = { isLocked = !isLocked }
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(horizontal = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            if (isLocked) {
+                                // Estado: BLOQUEADO (Bola à esquerda)
+                                Surface(
+                                    modifier = Modifier.size(40.dp), // A bola interna
+                                    shape = CircleShape,
+                                    color = Color(0xFF2D2D2D)
+                                ) {
+                                    Box(contentAlignment = Alignment.Center) {
+                                        Icon(Icons.Rounded.Lock, null, tint = Color.White, modifier = Modifier.size(18.dp))
+                                    }
+                                }
+
+                                // Texto empurrado para a direita
+                                Box(
+                                    modifier = Modifier.weight(1f),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text("Swipe to unlock >>", color = Color.Gray, fontSize = 12.sp, maxLines = 1)
+                                }
+                            } else {
+                                // Estado: DESBLOQUEADO (Bola à direita)
+                                Box(
+                                    modifier = Modifier.weight(1f),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text("<< Swipe to lock", color = Color.Black, fontSize = 12.sp, fontWeight = FontWeight.Bold, maxLines = 1)
+                                }
+
+                                Surface(
+                                    modifier = Modifier.size(40.dp),
+                                    shape = CircleShape,
+                                    color = Color.White
+                                ) {
+                                    Box(contentAlignment = Alignment.Center) {
+                                        Icon(Icons.Rounded.LockOpen, null, tint = Color.Black, modifier = Modifier.size(18.dp))
+                                    }
+                                }
+                            }
                         }
                     }
                 }
 
-                Spacer(modifier = Modifier.height(verticalPadding))
+                Spacer(modifier = Modifier.height(18.dp))
 
-                // 5. RODAPÉ
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    DashboardStat(Icons.Rounded.BatteryStd, "75%", "Charge", iconSizeStandard, screenW, Modifier.weight(1f))
-                    DashboardStat(Icons.Rounded.Bolt, "3,72", "kWh/100", iconSizeStandard, screenW, Modifier.weight(1f))
-                    DashboardStat(Icons.Rounded.ModeOfTravel, "245", "km", iconSizeStandard, screenW, Modifier.weight(1f))
-                    DashboardStat(Icons.Rounded.Map, "Loc", "Location", iconSizeStandard, screenW, Modifier.weight(1f))
+                // 5. INFOCARD DE STATUS (4 colunas conforme o mockup)
+                FulgoraInfoCard(modifier = Modifier.fillMaxWidth()) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        HomeStatItem(painterResource(id = AppIcons.Dashboard.Battery), "75%", "")
+                        HomeStatItem(painterResource(id = AppIcons.Dashboard.Power), "3,72", "kW/100")
+                        HomeStatItem(painterResource(id = AppIcons.Dashboard.Bike), "245", "km")
+                        HomeStatItem(painterResource(id = AppIcons.Dashboard.Status), "Offline", "")
+                    }
                 }
+
+                Spacer(modifier = Modifier.height(Dimens.PaddingMedium))
             }
         }
     }
 }
 
-// --- HELPERS E SUB-COMPONENTES ATUALIZADOS ---
-
-// Função mágica para converter tamanho base em tamanho responsivo
 @Composable
-fun getResponsiveTextSize(screenWidth: Dp, baseSize: Float): TextUnit {
-    // Lógica simples: Considera 360dp como largura base de um telemovel normal
-    val scaleFactor = screenWidth.value / 360f
-    return (baseSize * scaleFactor).sp
-}
-
-@Composable
-fun HomeHeader(iconSize: Dp) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Column {
-            Text(text = "Hi, Alex!", color = Color.Gray, fontSize = 14.sp)
-            Text(text = "Ready to ride?", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+fun HomeStatItem(icon: Any, value: String, label: String) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        when (icon) {
+            is androidx.compose.ui.graphics.vector.ImageVector -> Icon(icon, null, tint = GreenFresh, modifier = Modifier.size(24.dp))
+            is Painter -> Icon(icon, null, tint = GreenFresh, modifier = Modifier.size(24.dp))
         }
-        Row {
-            Icon(Icons.Default.Notifications, contentDescription = null, tint = Color.White, modifier = Modifier.size(iconSize))
-            Spacer(modifier = Modifier.width(16.dp))
-            Icon(Icons.Default.Menu, contentDescription = null, tint = Color.White, modifier = Modifier.size(iconSize))
-        }
-    }
-}
-
-@Composable
-fun DashboardStat(
-    icon: ImageVector,
-    value: String,
-    label: String,
-    iconSize: Dp,
-    screenW: Dp,
-    modifier: Modifier = Modifier // Adiciona isto
-) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier // Usa o modifier aqui
-    ) {
-        Icon(imageVector = icon, contentDescription = null, tint = GreenFresh, modifier = Modifier.size(iconSize))
         Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            text = value,
-            color = Color.White,
-            fontWeight = FontWeight.Bold,
-            fontSize = getResponsiveTextSize(screenW, 14f)
-        )
-        Text(
-            text = label,
-            color = Color.Gray,
-            fontSize = getResponsiveTextSize(screenW, 8f), // Reduzi ligeiramente
-            maxLines = 1
-
-        )
+        Row(verticalAlignment = Alignment.Bottom) {
+            Text(text = value, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            if (label.isNotEmpty()) {
+                Spacer(modifier = Modifier.width(2.dp))
+                Text(text = label, color = Color.Gray, fontSize = 10.sp)
+            }
+        }
     }
 }

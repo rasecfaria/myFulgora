@@ -1,4 +1,4 @@
-package com.example.myfulgora.ui.screens
+package com.example.myfulgora.ui.screens.tabs
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -7,7 +7,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -65,7 +64,6 @@ fun MapScreen() {
 }
 
 // 👇 O CODIGO JSON QUE PINTA O MAPA DE PRETO (Estilo "Midnight Commander")
-// Podes gerar outros estilos em: mapstyle.withgoogle.com
 const val MapStyleDark = """
 [
   {

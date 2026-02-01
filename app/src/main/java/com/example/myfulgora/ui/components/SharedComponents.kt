@@ -19,12 +19,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myfulgora.ui.theme.GreenFresh
 import com.example.myfulgora.ui.theme.CardBackgroundColor
+import androidx.compose.ui.graphics.painter.Painter
 
 
 
 // --- 1. O CABEÇALHO REUTILIZÁVEL (TOP BAR) ---
-// ... imports ...
-
 @Composable
 fun FulgoraTopBar(
     title: String = "Hi, Alex!",
@@ -40,8 +39,8 @@ fun FulgoraTopBar(
     ) {
         // Textos
         Column {
-            Text(text = title, color = Color.Gray, fontSize = 14.sp)
-            Text(text = subtitle, color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            Text(text = title, color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            Text(text = subtitle, color = Color.Gray, fontSize = 14.sp)
         }
 
         // Ícones Dinâmicos
@@ -89,4 +88,34 @@ fun FulgoraInfoCard(
             content()
         }
     }
+}
+
+
+@Composable
+fun FulgoraDrawerItem(
+    label: String,
+    painter: Painter, // 👈 Agora aceita os teus ícones (R.drawable...)
+    onClick: () -> Unit,
+    selected: Boolean = false,
+    textColor: Color = Color.White,
+    iconColor: Color = Color.White
+) {
+    NavigationDrawerItem(
+        icon = {
+            Icon(
+                painter = painter,
+                contentDescription = null,
+                tint = iconColor,
+                modifier = Modifier.size(24.dp) // Tamanho fixo para alinhar
+            )
+        },
+        label = { Text(label, color = textColor, fontSize = 16.sp) },
+        selected = selected,
+        onClick = onClick,
+        colors = NavigationDrawerItemDefaults.colors(
+            unselectedContainerColor = Color.Transparent,
+            selectedContainerColor = Color(0xFF2D2D2D) // Cinza escuro para seleção
+        ),
+        modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
+    )
 }

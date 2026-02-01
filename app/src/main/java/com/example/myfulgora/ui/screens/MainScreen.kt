@@ -1,145 +1,201 @@
 package com.example.myfulgora.ui.screens.tabs
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
-import com.example.myfulgora.ui.screens.auth.ForgotPasswordScreen
-import com.example.myfulgora.ui.screens.performance.PerformanceScreen
-import com.example.myfulgora.ui.screens.BatteryScreen // Confirma se este import está certo
+import androidx.navigation.compose.*
+import kotlinx.coroutines.launch
+import com.example.myfulgora.ui.components.FulgoraDrawerItem
 import com.example.myfulgora.ui.theme.AppIcons
 import com.example.myfulgora.ui.theme.BlackBrand
 import com.example.myfulgora.ui.theme.GreenFresh
-import androidx.compose.ui.res.painterResource // 👈 IMPORTANTE
-import androidx.compose.foundation.layout.size
-import androidx.compose.ui.unit.dp
+
+// Classe auxiliar para organizar os itens do menu
+data class DrawerItemData(
+    val title: String,
+    val icon: Int, // R.drawable...
+    val route: String
+)
 
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
 
-    Scaffold(
-        bottomBar = {
-            NavigationBar(
-                containerColor = BlackBrand,
-                contentColor = Color.Gray
+    // Lista de navegação (Igual à Navbar + Extras)
+    val menuItems = listOf(
+        DrawerItemData("Home", AppIcons.Navbar.Home, "home"),
+        DrawerItemData("Profile", AppIcons.Navbar.Home, "profile"),
+        DrawerItemData("Map", AppIcons.Navbar.Map, "map"),
+        DrawerItemData("Battery", AppIcons.Navbar.Battery, "battery"),
+        DrawerItemData("Performance", AppIcons.Navbar.Performance, "performance"),
+        DrawerItemData("Social", AppIcons.Navbar.Social, "social")
+    )
+
+    // Detetar rota atual para marcar o item selecionado
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            ModalDrawerSheet(
+                drawerContainerColor = Color(0xFF1E1E1E), // Fundo Dark
+                drawerContentColor = Color.White,
+                modifier = Modifier.width(300.dp)
             ) {
-                // 1. TEXTOS
-                val items = listOf("Map", "Battery", "Home", "Social", "Performance")
+                // --- CABEÇALHO (Igual ao Mockup) ---
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 24.dp, end = 24.dp, top = 48.dp, bottom = 24.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(64.dp)
+                            .clip(CircleShape)
+                            .background(Color.Gray),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        // Placeholder Foto
+                        Icon(Icons.Default.Person, null, tint = Color.White, modifier = Modifier.size(32.dp))
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text("Alex Rider", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                    Text("alex.rider@fulgora.com", fontSize = 14.sp, color = Color.Gray)
+                }
 
-                // 2. ÍCONES (Agora vêm do teu AppIcons)
-                // Confirma se os nomes batem certo com o teu ficheiro AppIcons!
-                val icons = listOf(
-                    AppIcons.Navbar.Map,         // Exemplo
-                    AppIcons.Navbar.Battery,
-                    AppIcons.Navbar.Home,
-                    AppIcons.Navbar.Social,
-                    AppIcons.Navbar.Home
-                )
+                HorizontalDivider(color = Color.Gray.copy(alpha = 0.3f), modifier = Modifier.padding(horizontal = 24.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
-                val navBackStackEntry by navController.currentBackStackEntryAsState()
-                val currentDestination = navBackStackEntry?.destination
-
-                items.forEachIndexed { index, item ->
-                    val isSelected = currentDestination?.hierarchy?.any { it.route == item.lowercase() } == true
-
-                    NavigationBarItem(
-                        // 👇 MUDANÇA AQUI: Usamos painterResource em vez de imageVector
-                        icon = {
-                            Icon(
-                                painter = painterResource(id = icons[index]),
-                                contentDescription = item,
-                                // Força o tamanho 24dp para ficarem todos iguais,
-                                // caso os PNGs/SVGs tenham tamanhos originais diferentes
-                                modifier = Modifier.size(30.dp)
-                            )
-                        },
-                        label = { Text(item) },
-                        alwaysShowLabel = false,
-                        selected = isSelected,
+                // --- LISTA DE NAVEGAÇÃO ---
+                menuItems.forEach { item ->
+                    FulgoraDrawerItem(
+                        label = item.title,
+                        painter = painterResource(id = item.icon),
+                        selected = currentRoute == item.route,
+                        iconColor = if (currentRoute == item.route) GreenFresh else Color.Gray,
+                        textColor = if (currentRoute == item.route) GreenFresh else Color.White,
                         onClick = {
-                            navController.navigate(item.lowercase()) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
+                            navController.navigate(item.route) {
+                                popUpTo(navController.graph.findStartDestination().id) { saveState = true }
                                 launchSingleTop = true
                                 restoreState = true
                             }
-                        },
-                        colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = GreenFresh,
-                            selectedTextColor = GreenFresh,
-                            indicatorColor = Color.Transparent,
-                            unselectedIconColor = Color.Gray,
-                            unselectedTextColor = Color.Gray
-                        )
+                            scope.launch { drawerState.close() }
+                        }
                     )
                 }
+
+                Spacer(modifier = Modifier.weight(1f)) // Empurra o resto para o fundo
+
+                // --- RODAPÉ (Settings & Logout) ---
+                FulgoraDrawerItem(
+                    label = "Settings",
+                    painter = painterResource(id = AppIcons.Navbar.Home), // Usa um ícone de Settings se tiveres
+                    onClick = { scope.launch { drawerState.close() } },
+                    iconColor = Color.Gray
+                )
+
+                FulgoraDrawerItem(
+                    label = "Logout",
+                    painter = painterResource(id = AppIcons.Navbar.Home), // Usa um ícone de Logout se tiveres
+                    onClick = { /* Lógica Logout */ },
+                    textColor = Color(0xFFFF4444),
+                    iconColor = Color(0xFFFF4444)
+                )
+
+                Spacer(modifier = Modifier.height(32.dp))
             }
         }
-    ) { innerPadding ->
-        // O Espaço onde os ecrãs mudam
-        NavHost(
-            navController = navController,
-            startDestination = "home",
-            modifier = Modifier.padding(innerPadding)
-        ) {
-            // Rotas
-            composable("map") {
-                // Placeholder se ainda não tiveres o MapScreen
-                MapScreen()
-            }
+    ) {
+        // --- CONTEÚDO PRINCIPAL (Scaffold) ---
+        Scaffold(
+            bottomBar = {
+                NavigationBar(
+                    containerColor = BlackBrand,
+                    contentColor = Color.Gray
+                ) {
+                    val bottomItems = listOf("Map", "Battery", "Home", "Social", "Performance")
+                    // Lista auxiliar de ícones para a navbar
+                    val bottomIcons = listOf(
+                        AppIcons.Navbar.Map,
+                        AppIcons.Navbar.Battery,
+                        AppIcons.Navbar.Home,
+                        AppIcons.Navbar.Social,
+                        AppIcons.Navbar.Performance
+                    )
 
-            composable("battery") {
-                BatteryScreen()
-            }
-
-            composable("home") {
-                HomeScreen()
-            }
-
-            composable("social") {
-                // Placeholder temporário centrado
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = androidx.compose.ui.Alignment.Center) {
-                    Text("Social Screen (WIP)", color = Color.White)
+                    bottomItems.forEachIndexed { index, item ->
+                        val isSelected = currentRoute == item.lowercase()
+                        NavigationBarItem(
+                            icon = {
+                                Icon(
+                                    painter = painterResource(id = bottomIcons[index]),
+                                    contentDescription = item,
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            },
+                            label = { Text(item) },
+                            selected = isSelected,
+                            alwaysShowLabel = false,
+                            onClick = {
+                                navController.navigate(item.lowercase()) {
+                                    popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+                            },
+                            colors = NavigationBarItemDefaults.colors(
+                                selectedIconColor = GreenFresh,
+                                selectedTextColor = GreenFresh,
+                                indicatorColor = Color.Transparent,
+                                unselectedIconColor = Color.Gray,
+                                unselectedTextColor = Color.Gray
+                            )
+                        )
+                    }
                 }
             }
-
-            composable("performance") {
-                // A nossa nova PerformanceScreen com o menu dinâmico
-                PerformanceScreen()
-            }
-
-            // Nota: Normalmente o ForgotPassword fica fora do MainScreen (no NavGraph principal),
-            // mas se quiseres manter aqui por agora, funciona.
-            composable("forgot_password") {
-                ForgotPasswordScreen(
-                    onNavigateBack = { navController.popBackStack() },
-                    onLoginAfterReset = {
-                        // Navega para fora deste NavHost (precisas de lógica na MainActivity para isto funcionar bem)
-                        // Por agora deixamos assim:
+        ) { innerPadding ->
+            NavHost(
+                navController = navController,
+                startDestination = "home",
+                modifier = Modifier.padding(innerPadding)
+            ) {
+                composable("profile") {
+                    ProfileScreen(onMenuClick = { scope.launch { drawerState.open() } })
+                }
+                composable("map") { MapScreen() }
+                composable("battery") {
+                    BatteryScreen(onMenuClick = { scope.launch { drawerState.open() } })
+                }
+                composable("home") {
+                    HomeScreen(onMenuClick = { scope.launch { drawerState.open() } })
+                }
+                composable("social") {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text("Social Screen", color = Color.White)
                     }
-                )
+                }
+                composable("performance") {
+                    PerformanceScreen(onMenuClick = { scope.launch { drawerState.open() } })
+                }
             }
         }
-    }
-}
-
-// Pequeno Placeholder para o Mapa não dar erro se não tiveres o ficheiro
-@Composable
-fun MapScreen() {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = androidx.compose.ui.Alignment.Center) {
-        Text("Map Screen", color = Color.White)
     }
 }

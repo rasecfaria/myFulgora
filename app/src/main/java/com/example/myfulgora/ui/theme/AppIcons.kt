@@ -11,17 +11,26 @@ object AppIcons {
         val Battery = R.drawable.bottom_navigation_battery
         val Home = R.drawable.bottom_navigation_home
         val Social = R.drawable.bottom_navigation_community
-        //icone da perfomance
-
+        val Performance = R.drawable.bottom_navigation_performance
     }
 
     // Grupo: Dashboard (Ecrã Principal)
     object Dashboard {
+        val BatteryTop = R.drawable.battery_charged
 
+        val MainBike = R.drawable.mota_crop
         val ArrowLeft0 = R.drawable.arrow_bike_left
         val ArrowLeft1 = R.drawable.arrow_bike_left_color
         val ArrowRight0 = R.drawable.arrow_bike_right
         val ArrowRight1 = R.drawable.arrow_bike_right_color
+
+        //icones infocard
+        val Battery = R.drawable.battery_bottom
+        val Power = R.drawable.power_bolt
+        val Bike = R.drawable.bike_mileage
+        val Status = R.drawable.info_status
+
+
 
     }
 
@@ -43,8 +52,12 @@ object AppIcons {
         val BigBattery = R.drawable.battery_charged_2
         val BigBatteryCharging = R.drawable.battery_charging
 
+    }
 
-
+    object Performance {
+        val tyre_pressure = R.drawable.performance_tyre_pressure
+        val next_service = R.drawable.performance_service_due
+        val performance = R.drawable.performance_performance
     }
 
 }

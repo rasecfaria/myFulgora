@@ -1,4 +1,4 @@
-package com.example.myfulgora.ui.screens
+package com.example.myfulgora.ui.screens.tabs
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -25,21 +25,20 @@ import androidx.compose.ui.unit.sp
 import com.example.myfulgora.ui.components.FulgoraBackground
 import com.example.myfulgora.ui.components.FulgoraTopBar
 import com.example.myfulgora.ui.theme.AppIcons
-import com.example.myfulgora.ui.theme.CardBackgroundColor // Certifica-te que tens esta cor no Theme/Color
+import com.example.myfulgora.ui.theme.CardBackgroundColor
 import com.example.myfulgora.ui.theme.Dimens
 import com.example.myfulgora.ui.theme.GreenFresh
 
 @Composable
-fun BatteryScreen() {
+fun BatteryScreen(
+    onMenuClick: () -> Unit = {}
+) {
     FulgoraBackground {
         BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
 
             val screenW = maxWidth
-            // val screenH = maxHeight // Podes usar se precisares de alturas relativas
-
-            // --- MISTURA DINÂMICO vs ESTÁTICO ---
-            val iconSize = screenW * Dimens.IconScaleRatio       // Dinâmico
-            val paddingSide = screenW * Dimens.SideMarginRatio   // Dinâmico (Margem Lateral)
+            val iconSize = screenW * Dimens.IconScaleRatio
+            val paddingSide = screenW * Dimens.SideMarginRatio
 
             val scrollState = rememberScrollState()
 
@@ -48,7 +47,7 @@ fun BatteryScreen() {
                     .fillMaxSize()
                     .verticalScroll(scrollState)
                     .padding(horizontal = paddingSide)
-                    .padding(top = Dimens.TopPadding), // 16.dp fixo (Padrão)
+                    .padding(top = Dimens.TopPadding),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
@@ -56,17 +55,18 @@ fun BatteryScreen() {
                 FulgoraTopBar(
                     title = "Hi, Alex!",
                     subtitle = "Ready to ride?",
-                    iconSize = iconSize
+                    iconSize = iconSize,
+                    onMenuClick = onMenuClick
                 )
 
-                Spacer(modifier = Modifier.height(Dimens.PaddingExtraLarge)) // Espaço dinâmico se quiseres, ou fixo 32dp
+                Spacer(modifier = Modifier.height(Dimens.PaddingExtraLarge))
 
                 // 2. TÍTULO
                 Text(
                     text = "Battery Info",
                     textAlign = TextAlign.Start,
                     color = Color.White,
-                    fontSize = Dimens.TextSizeHeader, // 28.sp
+                    fontSize = Dimens.TextSizeHeader,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -95,7 +95,7 @@ fun BatteryScreen() {
                     }
                 }
 
-                Spacer(modifier = Modifier.height(48.dp)) // Este podes manter fixo ou criar Dimens.SpacingSection
+                Spacer(modifier = Modifier.height(48.dp))
 
                 // 4. GRELHA DE ESTATÍSTICAS
                 Column(verticalArrangement = Arrangement.spacedBy(Dimens.PaddingMedium)) {
@@ -144,8 +144,6 @@ fun BatteryScreen() {
     }
 }
 
-// --- COMPONENTES AUXILIARES (Refatorados) ---
-
 @Composable
 fun BigBatteryIndicator(modifier: Modifier = Modifier) {
     Box(
@@ -167,13 +165,13 @@ fun BigBatteryIndicator(modifier: Modifier = Modifier) {
 fun BatteryInfoCard() {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp), // Podes por isto no Dimens.CardCornerRadius se quiseres
+        shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
-            containerColor = CardBackgroundColor // Usando a cor centralizada
+            containerColor = CardBackgroundColor
         )
     ) {
         Column(
-            modifier = Modifier.padding(Dimens.SpacingSmall) // 12.dp aprox
+            modifier = Modifier.padding(Dimens.SpacingSmall)
         ) {
             // Topo
             Column(
@@ -192,7 +190,7 @@ fun BatteryInfoCard() {
                 Text(
                     text = "03h 7m",
                     color = Color.White,
-                    fontSize = 32.sp, // Este é muito específico, podes deixar fixo ou criar Dimens.TextSizeHuge
+                    fontSize = 32.sp,
                     fontWeight = FontWeight.Bold
                 )
             }
