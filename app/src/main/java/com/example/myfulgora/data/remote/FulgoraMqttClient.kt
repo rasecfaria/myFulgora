@@ -57,8 +57,8 @@ object FulgoraMqttClient {
             "moto/speed",
             "moto/battery",
             "moto/gear",
-            "moto/range"
-        )
+            "moto/range",
+            "moto/status"        )
 
         topics.forEach { topic ->
             client?.subscribeWith()
@@ -84,7 +84,7 @@ object FulgoraMqttClient {
                     "moto/speed" -> currentState.copy(speed = payload.toIntOrNull() ?: 0)
                     "moto/battery" -> currentState.copy(batteryPercentage = payload.toIntOrNull() ?: 0)
                     "moto/range" -> currentState.copy(range = payload.toIntOrNull() ?: 0)
-                    "moto/gear" -> currentState.copy(gear = payload)
+                    "moto/status" -> currentState.copy(isOnline = payload.toBoolean())
                     else -> currentState
                 }
             } catch (e: Exception) {

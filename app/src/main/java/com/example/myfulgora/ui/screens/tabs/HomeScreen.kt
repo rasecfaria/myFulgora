@@ -355,11 +355,14 @@ fun HomeScreen(
                             "km"
                         )
 
-                        // 4. Status (Podes ligar ao isLocked)
+                        // 4. Status (Se o telemovel está conectado com a mota ou não...)
+                        val isOnline = state.isOnline // ⚠️ Certifica-te que tens isto no BikeState
+
                         HomeStatItem(
-                            painterResource(id = AppIcons.Dashboard.Status),
-                            if (state.isLocked) "Locked" else "Ready", // Valor dinâmico
-                            ""
+                            icon = painterResource(id = AppIcons.Dashboard.Status),
+                            value = if (isOnline) "Online" else "Offline",
+                            label = "",
+                            statusColor = if (isOnline) GreenFresh else Color.Red // 👈 Define a cor da bolinha
                         )
                     }
                 }
@@ -371,15 +374,42 @@ fun HomeScreen(
 }
 
 @Composable
-fun HomeStatItem(icon: Any, value: String, label: String) {
+fun HomeStatItem(
+    icon: Any,
+    value: String,
+    label: String,
+    statusColor: Color? = null // 👈 Novo parâmetro opcional
+) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        // Desenha o Ícone (aceita Vector ou Painter)
         when (icon) {
             is androidx.compose.ui.graphics.vector.ImageVector -> Icon(icon, null, tint = GreenFresh, modifier = Modifier.size(24.dp))
             is Painter -> Icon(icon, null, tint = GreenFresh, modifier = Modifier.size(24.dp))
         }
+
         Spacer(modifier = Modifier.height(4.dp))
-        Row(verticalAlignment = Alignment.Bottom) {
-            Text(text = value, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+
+        // Linha do Texto + Bolinha
+        Row(verticalAlignment = Alignment.CenterVertically) {
+
+            // 👇 AQUI ESTÁ A BOLINHA
+            if (statusColor != null) {
+                Box(
+                    modifier = Modifier
+                        .size(8.dp) // Tamanho da bolinha
+                        .clip(CircleShape)
+                        .background(statusColor)
+                )
+                Spacer(modifier = Modifier.width(6.dp)) // Espaço entre a bolinha e o texto
+            }
+
+            Text(
+                text = value,
+                color = Color.White,
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp
+            )
+
             if (label.isNotEmpty()) {
                 Spacer(modifier = Modifier.width(2.dp))
                 Text(text = label, color = Color.Gray, fontSize = 10.sp)

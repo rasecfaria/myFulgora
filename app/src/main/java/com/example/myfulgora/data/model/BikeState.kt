@@ -7,6 +7,7 @@ data class BikeState(
     val gear: String = "N", // P, N, D, R
     val isLocked: Boolean = true,
     val isCharging: Boolean = false,
+    val isOnline: Boolean = false,
 
     // Luzes e Sinais
     val leftTurnSignal: Boolean = false,
