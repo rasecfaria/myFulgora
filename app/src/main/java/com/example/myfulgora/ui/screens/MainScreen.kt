@@ -58,6 +58,7 @@ fun MainScreen() {
 
         ModalNavigationDrawer(
             drawerState = drawerState,
+            gesturesEnabled = false,
             drawerContent = {
                 // 2. CORREÇÃO: Voltamos a pôr o conteúdo do menu em LTR (Normal)
                 // Se não fizéssemos isto, o texto "Alex Rider" ficaria alinhado ao contrário.

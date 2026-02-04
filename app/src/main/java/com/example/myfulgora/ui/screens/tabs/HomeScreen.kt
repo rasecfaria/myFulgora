@@ -35,6 +35,17 @@ import com.example.myfulgora.ui.components.FulgoraTopBar
 import com.example.myfulgora.ui.theme.AppIcons
 import com.example.myfulgora.ui.theme.Dimens
 import com.example.myfulgora.ui.theme.GreenFresh
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.IntOffset
+import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 @Composable
 fun HomeScreen(
@@ -192,58 +203,119 @@ fun HomeScreen(
                     }
 
                     // --- SLIDER LOCK/UNLOCK (60%) ---
-                    Surface(
+                    BoxWithConstraints(
                         modifier = Modifier
-                            .weight(0.6f)      // 👈 Ocupa os restantes 60%
-                            .fillMaxHeight(),
-                        shape = RoundedCornerShape(28.dp),
-                        color = if (isLocked) Color(0xFF1E1E1E) else GreenFresh,
-                        onClick = { isLocked = !isLocked }
+                            .weight(0.6f)
+                            .fillMaxHeight()
+                            .background(
+                                color = if (isLocked) Color(0xFF1E1E1E) else GreenFresh,
+                                shape = RoundedCornerShape(28.dp)
+                            )
+                            .clip(RoundedCornerShape(28.dp)) // Garante que nada sai das bordas
                     ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(horizontal = 8.dp),
-                            verticalAlignment = Alignment.CenterVertically
+                        val maxWidthPx = constraints.maxWidth.toFloat()
+                        val thumbSize = 48.dp // Tamanho da bolinha (um pouco menor que a altura 56dp para ter margem)
+                        val padding = 4.dp    // Margem interna
+
+                        // Converter dp para pixéis
+                        val density = LocalDensity.current
+                        val thumbSizePx = with(density) { thumbSize.toPx() }
+                        val paddingPx = with(density) { padding.toPx() }
+
+                        // A distância máxima que a bola pode andar
+                        val maxSwipeDistance = maxWidthPx - thumbSizePx - (paddingPx * 2)
+
+                        // Estado da animação da posição da bola
+                        // Se isLocked = 0 (Esquerda), Se !isLocked = maxSwipeDistance (Direita)
+                        val swipeableState = remember { Animatable(if (isLocked) 0f else maxSwipeDistance) }
+                        val scope = rememberCoroutineScope()
+
+                        // Sincronizar estado externo (isLocked) com a posição visual
+                        LaunchedEffect(isLocked) {
+                            swipeableState.animateTo(
+                                targetValue = if (isLocked) 0f else maxSwipeDistance,
+                                animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
+                            )
+                        }
+
+                        // 1. O TEXTO DE FUNDO (Fica estático atrás)
+                        Box(
+                            modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
+                            contentAlignment = Alignment.Center
                         ) {
                             if (isLocked) {
-                                // Estado: BLOQUEADO (Bola à esquerda)
-                                Surface(
-                                    modifier = Modifier.size(40.dp), // A bola interna
-                                    shape = CircleShape,
-                                    color = Color(0xFF2D2D2D)
-                                ) {
-                                    Box(contentAlignment = Alignment.Center) {
-                                        Icon(Icons.Rounded.Lock, null, tint = Color.White, modifier = Modifier.size(18.dp))
-                                    }
-                                }
-
-                                // Texto empurrado para a direita
-                                Box(
-                                    modifier = Modifier.weight(1f),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text("Swipe to unlock >>", color = Color.Gray, fontSize = 12.sp, maxLines = 1)
-                                }
+                                // Texto alinhado à direita quando bloqueado
+                                Text(
+                                    "Swipe to unlock >>",
+                                    color = Color.Gray,
+                                    fontSize = 12.sp,
+                                    modifier = Modifier.align(Alignment.CenterEnd)
+                                )
                             } else {
-                                // Estado: DESBLOQUEADO (Bola à direita)
-                                Box(
-                                    modifier = Modifier.weight(1f),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text("<< Swipe to lock", color = Color.Black, fontSize = 12.sp, fontWeight = FontWeight.Bold, maxLines = 1)
-                                }
-
-                                Surface(
-                                    modifier = Modifier.size(40.dp),
-                                    shape = CircleShape,
-                                    color = Color.White
-                                ) {
-                                    Box(contentAlignment = Alignment.Center) {
-                                        Icon(Icons.Rounded.LockOpen, null, tint = Color.Black, modifier = Modifier.size(18.dp))
-                                    }
-                                }
+                                // Texto alinhado à esquerda quando desbloqueado
+                                Text(
+                                    "<< Swipe to lock",
+                                    color = Color.Black,
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.align(Alignment.CenterStart)
+                                )
                             }
+                        }
+
+                        // 2. A BOLINHA QUE DESLIZA (Thumb)
+                        Box(
+                            modifier = Modifier
+                                .padding(padding) // Margem de segurança
+                                .offset { IntOffset(swipeableState.value.roundToInt(), 0) } // 👈 O segredo: move a bola aqui
+                                .size(thumbSize)
+                                .background(
+                                    color = if (isLocked) Color(0xFF2D2D2D) else Color.White,
+                                    shape = CircleShape
+                                )
+                                .draggable(
+                                    orientation = Orientation.Horizontal,
+                                    state = rememberDraggableState { delta ->
+                                        // Atualiza a posição enquanto arrastas (respeitando os limites)
+                                        scope.launch {
+                                            swipeableState.snapTo(
+                                                (swipeableState.value + delta).coerceIn(0f, maxSwipeDistance)
+                                            )
+                                        }
+                                    },
+                                    onDragStopped = {
+                                        // LÓGICA FINAL: Quando largas o dedo
+                                        val targetVal = swipeableState.value
+                                        val threshold = maxSwipeDistance * 0.5f // Se passar de 50% do caminho
+
+                                        if (isLocked) {
+                                            // Estava bloqueado, se arrastou muito para a direita -> Desbloqueia
+                                            if (targetVal > threshold) {
+                                                isLocked = false
+                                            } else {
+                                                // Não chegou lá? Volta para trás (Snap Back)
+                                                scope.launch { swipeableState.animateTo(0f) }
+                                            }
+                                        } else {
+                                            // Estava desbloqueado, se arrastou muito para a esquerda -> Bloqueia
+                                            if (targetVal < threshold) {
+                                                isLocked = true
+                                            } else {
+                                                // Não chegou lá? Volta para a direita
+                                                scope.launch { swipeableState.animateTo(maxSwipeDistance) }
+                                            }
+                                        }
+                                    }
+                                ),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            // Ícone dentro da bolinha
+                            Icon(
+                                imageVector = if (isLocked) Icons.Rounded.Lock else Icons.Rounded.LockOpen,
+                                contentDescription = null,
+                                tint = if (isLocked) Color.White else Color.Black,
+                                modifier = Modifier.size(20.dp)
+                            )
                         }
                     }
                 }
