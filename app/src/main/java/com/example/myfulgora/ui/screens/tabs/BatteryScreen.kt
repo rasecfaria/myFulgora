@@ -2,6 +2,7 @@ package com.example.myfulgora.ui.screens.tabs
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -105,13 +106,13 @@ fun BatteryScreen(
                         horizontalArrangement = Arrangement.spacedBy(Dimens.PaddingMedium)
                     ) {
                         BatteryStatCard(
-                            icon = Icons.Rounded.Favorite,
+                            icon = AppIcons.Battery.BatteryHealth,
                             title = "Battery health",
                             value = "Good",
                             modifier = Modifier.weight(1f)
                         )
                         BatteryStatCard(
-                            icon = Icons.Rounded.Thermostat,
+                            icon = AppIcons.Battery.BatteryTemperature,
                             title = "Temperature",
                             value = "32°C",
                             modifier = Modifier.weight(1f)
@@ -123,13 +124,13 @@ fun BatteryScreen(
                         horizontalArrangement = Arrangement.spacedBy(Dimens.PaddingMedium)
                     ) {
                         BatteryStatCard(
-                            icon = Icons.Rounded.Bolt,
+                            icon = AppIcons.Battery.BatteryConsumption,
                             title = "Avg. consumption",
                             value = "45 Wh/km",
                             modifier = Modifier.weight(1f)
                         )
                         BatteryStatCard(
-                            icon = Icons.Rounded.Autorenew,
+                            icon = AppIcons.Battery.BatteryChargingCycles,
                             title = "Charging cycles",
                             value = "124 cycles",
                             modifier = Modifier.weight(1f)
@@ -146,17 +147,35 @@ fun BatteryScreen(
 
 @Composable
 fun BigBatteryIndicator(modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier,
-        contentAlignment = Alignment.Center
+    Column( // 👈 Mudámos de Box para Column para ficar um em baixo do outro
+        modifier = modifier, // Recebe o weight(0.35f) e fillMaxHeight() do pai
+        horizontalAlignment = Alignment.CenterHorizontally, // Centra horizontalmente
+        //verticalArrangement = Arrangement.Center // Centra verticalmente
+
     ) {
+        Spacer(modifier = Modifier.weight(1.2f))
+        // 1. ÍCONE DA BATERIA
         Icon(
             painter = painterResource(id = AppIcons.Battery.BigBatteryCharging),
             contentDescription = "Battery Status",
             tint = GreenFresh,
             modifier = Modifier
-                .fillMaxSize()
-                .scale(1.3f)
+                // Não uses fillMaxSize aqui senão empurra o texto para fora.
+                // Usa um tamanho fixo ou weight. Vou pôr um tamanho generoso:
+                .size(100.dp)
+                .scale(1.5f)
+        )
+
+        // Espaço entre o ícone e o texto
+        Spacer(modifier = Modifier.height(20.dp))
+
+        // 2. TEXTO DA PERCENTAGEM
+        Text(
+            text = "78%",
+            color = Color.White,
+            fontSize = 26.sp,
+            fontWeight = FontWeight.ExtraBold,
+            letterSpacing = (-1).sp
         )
     }
 }
@@ -259,7 +278,7 @@ fun BatteryInfoCard() {
 
 @Composable
 fun BatteryStatCard(
-    icon: ImageVector,
+    icon: Int,
     title: String,
     value: String,
     modifier: Modifier = Modifier
@@ -270,10 +289,10 @@ fun BatteryStatCard(
             .padding(Dimens.PaddingMedium)
     ) {
         Icon(
-            imageVector = icon,
+            painter = painterResource(id = icon),
             contentDescription = null,
             tint = GreenFresh,
-            modifier = Modifier.size(24.dp)
+            modifier = Modifier.size(34.dp)
         )
         Spacer(modifier = Modifier.height(Dimens.PaddingMedium))
         Text(text = value, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)

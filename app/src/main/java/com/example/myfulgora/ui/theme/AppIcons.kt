@@ -52,6 +52,13 @@ object AppIcons {
         val BigBattery = R.drawable.battery_charged_2
         val BigBatteryCharging = R.drawable.battery_charging
 
+        //infocards
+        val BatteryHealth = R.drawable.battery_tab_icon_3
+        val BatteryTemperature = R.drawable.battery_tab_icon_4
+        val BatteryConsumption = R.drawable.battery_tab_icon_5
+        val BatteryChargingCycles = R.drawable.battery_tab_icon_6
+
+
     }
 
     object Performance {
