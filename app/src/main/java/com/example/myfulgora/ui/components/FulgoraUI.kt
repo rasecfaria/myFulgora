@@ -1,5 +1,6 @@
 package com.example.myfulgora.ui.components
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -11,24 +12,57 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.myfulgora.ui.theme.GreenFresh
-import com.example.myfulgora.ui.theme.CardBackgroundColor
-import androidx.compose.ui.graphics.painter.Painter
+import com.example.myfulgora.ui.theme.*
 
+@Composable
+fun FulgoraBackground(
+    content: @Composable BoxScope.() -> Unit
+) {
+    val bottomGlow = Brush.radialGradient(
+        colors = listOf(
+            GreenDeep.copy(alpha = 0.5f),
+            Color.Transparent
+        ),
+        center = Offset(x = 0f, y = Float.POSITIVE_INFINITY),
+        radius = 1500f
+    )
 
+    val topGlow = Brush.radialGradient(
+        colors = listOf(
+            Color(0xFF1E293B).copy(alpha = 0.6f),
+            Color.Transparent
+        ),
+        center = Offset(x = Float.POSITIVE_INFINITY, y = 0f),
+        radius = 1200f
+    )
 
-// --- 1. O CABEÇALHO REUTILIZÁVEL (TOP BAR) ---
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(BlackBrand)
+            .background(bottomGlow)
+            .background(topGlow)
+    ) {
+        content()
+    }
+}
+
 @Composable
 fun FulgoraTopBar(
     title: String = "Hi, Alex!",
     subtitle: String = "Ready to ride?",
-    iconSize: Dp = 24.dp, // 👈 Novo parâmetro com valor por defeito
+    iconSize: Dp = 24.dp,
     onNotificationClick: () -> Unit = {},
     onMenuClick: () -> Unit = {}
 ) {
@@ -37,20 +71,18 @@ fun FulgoraTopBar(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Textos
         Column {
             Text(text = title, color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
             Text(text = subtitle, color = Color.Gray, fontSize = 14.sp)
         }
 
-        // Ícones Dinâmicos
         Row {
             Icon(
                 imageVector = Icons.Default.Notifications,
                 contentDescription = "Notifications",
                 tint = Color.White,
                 modifier = Modifier
-                    .size(iconSize) // 👈 Usa o tamanho calculado
+                    .size(iconSize)
                     .clickable { onNotificationClick() }
             )
 
@@ -61,15 +93,13 @@ fun FulgoraTopBar(
                 contentDescription = "Menu",
                 tint = Color.White,
                 modifier = Modifier
-                    .size(iconSize) // 👈 Usa o tamanho calculado
+                    .size(iconSize)
                     .clickable { onMenuClick() }
             )
         }
     }
 }
 
-// --- 2. O CARTÃO CINZENTO BASE (INFO CARD) ---
-// Este é o "contentor" que vamos usar para Pneus, Performance, etc.
 @Composable
 fun FulgoraInfoCard(
     modifier: Modifier = Modifier,
@@ -78,23 +108,52 @@ fun FulgoraInfoCard(
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp), // Cantos arredondados consistentes
+        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = backgroundColor),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Column(
-            modifier = Modifier.padding(16.dp) // Padding interno padrão
+            modifier = Modifier.padding(16.dp)
         ) {
             content()
         }
     }
 }
 
+@Composable
+fun CircularBatteryArc(percentage: Float) {
+    Canvas(modifier = Modifier.size(300.dp)) {
+        drawArc(
+            color = Color(0xFF1E293B),
+            startAngle = 140f,
+            sweepAngle = 260f,
+            useCenter = false,
+            style = Stroke(width = 15f, cap = StrokeCap.Round)
+        )
+        drawArc(
+            color = GreenFresh,
+            startAngle = 140f,
+            sweepAngle = 260f * percentage,
+            useCenter = false,
+            style = Stroke(width = 15f, cap = StrokeCap.Round)
+        )
+    }
+}
+
+@Composable
+fun DashboardStat(icon: ImageVector, value: String, label: String) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Icon(imageVector = icon, contentDescription = null, tint = GreenFresh, modifier = Modifier.size(24.dp))
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(text = value, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+        Text(text = label, color = Color.Gray, fontSize = 12.sp)
+    }
+}
 
 @Composable
 fun FulgoraDrawerItem(
     label: String,
-    painter: Painter, // 👈 Agora aceita os teus ícones (R.drawable...)
+    painter: Painter,
     onClick: () -> Unit,
     selected: Boolean = false,
     textColor: Color = Color.White,
@@ -106,7 +165,7 @@ fun FulgoraDrawerItem(
                 painter = painter,
                 contentDescription = null,
                 tint = iconColor,
-                modifier = Modifier.size(24.dp) // Tamanho fixo para alinhar
+                modifier = Modifier.size(24.dp)
             )
         },
         label = { Text(label, color = textColor, fontSize = 16.sp) },
@@ -114,8 +173,30 @@ fun FulgoraDrawerItem(
         onClick = onClick,
         colors = NavigationDrawerItemDefaults.colors(
             unselectedContainerColor = Color.Transparent,
-            selectedContainerColor = Color(0xFF2D2D2D) // Cinza escuro para seleção
+            selectedContainerColor = Color(0xFF2D2D2D)
         ),
         modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
+    )
+}
+
+@Composable
+fun FulgoraDrawerItem(
+    icon: ImageVector,
+    label: String,
+    onClick: () -> Unit,
+    selected: Boolean = false,
+    textColor: Color = Color.White,
+    iconColor: Color = Color.White
+) {
+    NavigationDrawerItem(
+        icon = { Icon(icon, contentDescription = null, tint = iconColor) },
+        label = { Text(label, color = textColor) },
+        selected = selected,
+        onClick = onClick,
+        colors = NavigationDrawerItemDefaults.colors(
+            unselectedContainerColor = Color.Transparent,
+            selectedContainerColor = Color(0xFF2D2D2D)
+        ),
+        modifier = Modifier.padding(horizontal = 12.dp)
     )
 }

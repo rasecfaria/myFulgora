@@ -23,15 +23,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myfulgora.ui.theme.GreenFresh
 
-// Cor do Fundo
+// Cor do Fundo para Inputs
 val DarkInputBackground = Color(0xFF222222)
 
 @Composable
-fun CustomDarkInput(
+fun FulgoraTextField(
     text: String,
     onTextChange: (String) -> Unit,
     placeholder: String,
-    modifier: Modifier = Modifier // Adicionei modifier para ser mais flexível
+    modifier: Modifier = Modifier
 ) {
     BasicTextField(
         value = text,
@@ -62,7 +62,7 @@ fun CustomDarkInput(
 }
 
 @Composable
-fun CustomDarkPasswordInput(
+fun FulgoraPasswordField(
     text: String,
     onTextChange: (String) -> Unit,
     placeholder: String,
