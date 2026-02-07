@@ -14,6 +14,16 @@ object AppIcons {
         val Performance = R.drawable.bottom_navigation_performance
     }
 
+    //Menu Hamburguer
+    object Menu {
+        val Profile = R.drawable.profile_hamburguer
+        val Settings = R.drawable.settings
+        val Help = R.drawable.help_ico
+        val Logout = R.drawable.logout
+    }
+
+
+
     // Grupo: Dashboard (Ecrã Principal)
     object Dashboard {
         val BatteryTop = R.drawable.battery_charged

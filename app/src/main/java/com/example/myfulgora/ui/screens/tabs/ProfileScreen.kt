@@ -225,7 +225,7 @@ fun ProfileScreen(
 
                     Spacer(modifier = Modifier.height(Dimens.PaddingMedium))
 
-                    val rewards = listOf("Assistence", "Dealership COntact", "More to Come")
+                    val rewards = listOf("Assistence", "Dealership Contact", "More to Come")
                     rewards.forEachIndexed { index, reward ->
                         Row(
                             modifier = Modifier

@@ -61,7 +61,7 @@ fun MainScreen() {
         DrawerItemData("Battery", AppIcons.Navbar.Battery, "battery"),
         DrawerItemData("Social", AppIcons.Navbar.Social, "social"),
         DrawerItemData("Performance", AppIcons.Navbar.Performance, "performance"),
-        DrawerItemData("Settings", Icons.Outlined.Settings, "settings")
+        DrawerItemData("Settings", AppIcons.Menu.Settings, "settings")
     )
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -98,29 +98,10 @@ fun MainScreen() {
                                 Image(
                                     painter = painterResource(id = R.drawable.logo_app),
                                     contentDescription = "myFULGORA",
-                                    modifier = Modifier.height(28.dp)
+                                    modifier = Modifier.height(100.dp)
                                 )
                                 Spacer(modifier = Modifier.weight(1.2f))
                             }
-
-                            Spacer(modifier = Modifier.height(24.dp))
-
-                            // Search Bar
-                            TextField(
-                                value = searchQuery,
-                                onValueChange = { searchQuery = it },
-                                modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp).height(50.dp),
-                                placeholder = { Text("Search", color = Color.Gray, fontSize = 14.sp) },
-                                leadingIcon = { Icon(Icons.Default.Search, null, tint = Color.Gray, modifier = Modifier.size(20.dp)) },
-                                colors = TextFieldDefaults.colors(
-                                    focusedContainerColor = Color(0xFF1E1E1E),
-                                    unfocusedContainerColor = Color(0xFF1E1E1E),
-                                    focusedIndicatorColor = Color.Transparent,
-                                    unfocusedIndicatorColor = Color.Transparent
-                                ),
-                                shape = RoundedCornerShape(12.dp),
-                                singleLine = true
-                            )
 
                             Spacer(modifier = Modifier.height(32.dp))
 
@@ -148,12 +129,12 @@ fun MainScreen() {
                             // Bottom Items
                             DrawerItem(
                                 label = "Help",
-                                icon = Icons.Outlined.HelpOutline,
+                                icon = AppIcons.Menu.Help,
                                 onClick = { /* Help */ }
                             )
                             DrawerItem(
                                 label = "Log Out",
-                                icon = Icons.AutoMirrored.Filled.Logout,
+                                icon = AppIcons.Menu.Logout,
                                 onClick = { /* Logout */ }
                             )
                             Spacer(modifier = Modifier.height(16.dp))
@@ -198,7 +179,7 @@ fun MainScreen() {
                         composable("home") { HomeScreen(state = currentBikeState, onMenuClick = { scope.launch { drawerState.open() } }) }
                         composable("social") { SocialScreen(onMenuClick = { scope.launch { drawerState.open() } }) }
                         composable("performance") { PerformanceScreen(onMenuClick = { scope.launch { drawerState.open() } }) }
-                        composable("settings") { /* Settings Screen */ }
+                        composable("settings") { /*SettingsScreen()*/ }
                     }
                 }
             }
