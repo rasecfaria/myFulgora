@@ -172,14 +172,14 @@ fun MainScreen() {
                         }
                     }
                 ) { innerPadding ->
-                    NavHost(navController = navController, startDestination = "home", modifier = Modifier.padding(innerPadding)) {
+                    NavHost(navController = navController, startDestination = "settings", modifier = Modifier.padding(innerPadding)) {
                         composable("map") { MapScreen() }
                         composable("profile") { ProfileScreen(onMenuClick = { scope.launch { drawerState.open() } }) }
                         composable("battery") { BatteryScreen(state = currentBikeState, onMenuClick = { scope.launch { drawerState.open() } }) }
                         composable("home") { HomeScreen(state = currentBikeState, onMenuClick = { scope.launch { drawerState.open() } }) }
                         composable("social") { SocialScreen(onMenuClick = { scope.launch { drawerState.open() } }) }
                         composable("performance") { PerformanceScreen(onMenuClick = { scope.launch { drawerState.open() } }) }
-                        composable("settings") { /*SettingsScreen()*/ }
+                        composable("settings") { SettingsScreen(onMenuClick = { scope.launch { drawerState.open() } }) }
                     }
                 }
             }
