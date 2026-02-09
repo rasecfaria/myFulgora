@@ -134,7 +134,7 @@ fun BatteryScreen(
                         BatteryStatCard(
                             icon = AppIcons.Battery.BatteryConsumption,
                             title = stringResource(id = R.string.battery_consumption),
-                            value = "45 Wh/km",
+                            value = "${state.avgConsumption} kW/100km",
                             modifier = Modifier.weight(1f)
                         )
                         BatteryStatCard(

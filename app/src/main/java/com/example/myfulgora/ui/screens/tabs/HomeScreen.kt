@@ -344,7 +344,7 @@ fun HomeScreen(
                         // 2. Consumo (Podes manter estático ou simular depois)
                         HomeStatItem(
                             painterResource(id = AppIcons.Dashboard.Power),
-                            "3,72",
+                            "${state.consumption}",
                             "kW/100"
                         )
 
