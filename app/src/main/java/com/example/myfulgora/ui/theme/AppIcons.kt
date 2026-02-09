@@ -51,6 +51,7 @@ object AppIcons {
         val ArrowLeft1 = R.drawable.arrow_bike_left_color
         val ArrowRight0 = R.drawable.arrow_bike_right
         val ArrowRight1 = R.drawable.arrow_bike_right_color
+        val DropDown = R.drawable.dropdown_arrow
 
     }
 

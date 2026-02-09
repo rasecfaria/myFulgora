@@ -77,8 +77,6 @@ fun HomeScreen(
 
                 // 1. TOP BAR
                 FulgoraTopBar(
-                    title = "Hi, Alex!",
-                    subtitle = "Ready to ride?",
                     iconSize = iconSize,
                     onMenuClick = onMenuClick
                 )

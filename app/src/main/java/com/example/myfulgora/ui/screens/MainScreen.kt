@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -40,7 +41,7 @@ import kotlinx.coroutines.launch
 
 // Classe auxiliar atualizada para aceitar Painter ou ImageVector
 data class DrawerItemData(
-    val title: String,
+    val title: Int,
     val icon: Any,
     val route: String
 )
@@ -55,13 +56,13 @@ fun MainScreen() {
     var searchQuery by remember { mutableStateOf("") }
 
     val menuItems = listOf(
-        DrawerItemData("Home", AppIcons.Navbar.Home, "home"),
-        DrawerItemData("Profile", Icons.Outlined.Person, "profile"),
-        DrawerItemData("Map", AppIcons.Navbar.Map, "map"),
-        DrawerItemData("Battery", AppIcons.Navbar.Battery, "battery"),
-        DrawerItemData("Social", AppIcons.Navbar.Social, "social"),
-        DrawerItemData("Performance", AppIcons.Navbar.Performance, "performance"),
-        DrawerItemData("Settings", AppIcons.Menu.Settings, "settings")
+        DrawerItemData(R.string.navbar_home, AppIcons.Navbar.Home, "home"),
+        DrawerItemData(R.string.navbar_profile, Icons.Outlined.Person, "profile"),
+        DrawerItemData(R.string.navbar_map, AppIcons.Navbar.Map, "map"),
+        DrawerItemData(R.string.navbar_battery, AppIcons.Navbar.Battery, "battery"),
+        DrawerItemData(R.string.navbar_social, AppIcons.Navbar.Social, "social"),
+        DrawerItemData(R.string.navbar_performance, AppIcons.Navbar.Performance, "performance"),
+        DrawerItemData(R.string.navbar_settings, AppIcons.Menu.Settings, "settings")
     )
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -109,7 +110,7 @@ fun MainScreen() {
                             Column(modifier = Modifier.fillMaxWidth()) {
                                 menuItems.forEach { item ->
                                     DrawerItem(
-                                        label = item.title,
+                                        label = stringResource(id = item.title),
                                         icon = item.icon,
                                         selected = currentRoute == item.route,
                                         onClick = {
@@ -128,12 +129,12 @@ fun MainScreen() {
 
                             // Bottom Items
                             DrawerItem(
-                                label = "Help",
+                                label = stringResource(R.string.navbar_help),
                                 icon = AppIcons.Menu.Help,
                                 onClick = { /* Help */ }
                             )
                             DrawerItem(
-                                label = "Log Out",
+                                label = stringResource(R.string.navbar_logout),
                                 icon = AppIcons.Menu.Logout,
                                 onClick = { /* Logout */ }
                             )
@@ -147,25 +148,58 @@ fun MainScreen() {
                 Scaffold(
                     bottomBar = {
                         NavigationBar(containerColor = BlackBrand, contentColor = Color.Gray) {
-                            val bottomItems = listOf("Map", "Battery", "Home", "Social", "Performance")
-                            val bottomIcons = listOf(AppIcons.Navbar.Map, AppIcons.Navbar.Battery, AppIcons.Navbar.Home, AppIcons.Navbar.Social, AppIcons.Navbar.Performance)
-                            bottomItems.forEachIndexed { index, item ->
-                                val route = item.lowercase()
+
+                            // 1. CRIAR UMA CLASSE DE DADOS TEMPORÁRIA (Ou meter num ficheiro à parte)
+                            data class NavItem(
+                                val route: String,      // ID Interno (Fixo: "home", "battery")
+                                val labelRes: Int,      // ID da String (R.string.navbar_home)
+                                val icon: Int           // O ícone
+                            )
+
+                            // 2. DEFINIR A LISTA COM DADOS FIXOS
+                            val navItems = listOf(
+                                NavItem("map", R.string.navbar_map, AppIcons.Navbar.Map),
+                                NavItem("battery", R.string.navbar_battery, AppIcons.Navbar.Battery),
+                                NavItem("home", R.string.navbar_home, AppIcons.Navbar.Home),
+                                NavItem("social", R.string.navbar_social, AppIcons.Navbar.Social),
+                                NavItem("performance", R.string.navbar_performance, AppIcons.Navbar.Performance)
+                            )
+
+                            // 3. PERCORRER A LISTA CORRIGIDA
+                            navItems.forEach { item ->
+
+                                // Verifica se a rota atual corresponde à rota deste item
+                                // (Agora comparamos "battery" com "battery", e não "Bateria")
+                                val isSelected = currentRoute == item.route
+
                                 NavigationBarItem(
-                                    icon = { Icon(painterResource(id = bottomIcons[index]), item, modifier = Modifier.size(24.dp)) },
-                                    label = { Text(item) },
-                                    selected = currentRoute == route,
+                                    icon = {
+                                        Icon(
+                                            painterResource(id = item.icon),
+                                            contentDescription = stringResource(id = item.labelRes), // Boa prática para acessibilidade
+                                            modifier = Modifier.size(24.dp)
+                                        )
+                                    },
+                                    label = {
+                                        // AQUI usamos o stringResource para traduzir o texto visual
+                                        Text(text = stringResource(id = item.labelRes))
+                                    },
+                                    selected = isSelected,
                                     alwaysShowLabel = false,
                                     onClick = {
-                                        navController.navigate(route) {
+                                        // AQUI usamos a rota fixa ("battery") e não a traduzida
+                                        navController.navigate(item.route) {
                                             popUpTo(navController.graph.findStartDestination().id) { saveState = true }
                                             launchSingleTop = true
                                             restoreState = true
                                         }
                                     },
                                     colors = NavigationBarItemDefaults.colors(
-                                        selectedIconColor = GreenFresh, selectedTextColor = GreenFresh,
-                                        indicatorColor = Color.Transparent, unselectedIconColor = Color.Gray, unselectedTextColor = Color.Gray
+                                        selectedIconColor = GreenFresh,
+                                        selectedTextColor = GreenFresh,
+                                        indicatorColor = Color.Transparent,
+                                        unselectedIconColor = Color.Gray,
+                                        unselectedTextColor = Color.Gray
                                     )
                                 )
                             }

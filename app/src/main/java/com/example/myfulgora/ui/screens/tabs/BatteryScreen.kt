@@ -67,8 +67,6 @@ fun BatteryScreen(
 
                 // 1. CABEÇALHO PARTILHADO
                 FulgoraTopBar(
-                    title = "Hi, Alex!",
-                    subtitle = "Ready to ride?",
                     iconSize = iconSize,
                     onMenuClick = onMenuClick
                 )
@@ -118,7 +116,7 @@ fun BatteryScreen(
                         BatteryStatCard(
                             icon = AppIcons.Battery.BatteryHealth,
                             title = stringResource(id = R.string.battery_health),
-                            value = state.batteryHealth,
+                            value = stringResource(id = R.string.battery_health_good),
                             modifier = Modifier.weight(1f)
                         )
                         BatteryStatCard(
@@ -142,7 +140,7 @@ fun BatteryScreen(
                         BatteryStatCard(
                             icon = AppIcons.Battery.BatteryChargingCycles,
                             title = stringResource(id = R.string.battery_charging_cycles),
-                            value = "${state.batteryCycles} cycles",
+                            value = "${state.batteryCycles} " + stringResource(id = R.string.battery_cycles),
                             modifier = Modifier.weight(1f)
                         )
                     }

@@ -15,9 +15,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.myfulgora.R
 import com.example.myfulgora.ui.components.FulgoraBackground
 import com.example.myfulgora.ui.components.FulgoraInfoCard
 import com.example.myfulgora.ui.components.FulgoraTopBar
@@ -56,13 +58,13 @@ fun SocialScreen(
                 // 2. HEADER TEXT
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        text = "Ride Smart",
+                        text = stringResource(id = R.string.social_title),
                         fontSize = Dimens.TextSizeHeader,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
                     )
                     Text(
-                        text = "Your weekly efficiency summary",
+                        text = stringResource(id = R.string.social_subtitle),
                         fontSize = Dimens.TextSizeNormal,
                         color = Color.Gray
                     )
@@ -93,14 +95,14 @@ fun SocialScreen(
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
-                                    text = "E-Points",
+                                    text = stringResource(id = R.string.social_epoints),
                                     color = Color.Gray,
                                     fontSize = 12.sp,
                                     modifier = Modifier.padding(bottom = 4.dp)
                                 )
                             }
                             Text(
-                                text = "Earn through efficiency riding",
+                                text = stringResource(id = R.string.social_epoints_description),
                                 color = Color.Gray.copy(alpha = 0.7f),
                                 fontSize = 12.sp
                             )
@@ -139,22 +141,17 @@ fun SocialScreen(
                         Spacer(modifier = Modifier.width(Dimens.PaddingMedium))
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
-                                text = "Top 10% Rider",
+                                text = stringResource(id = R.string.social_top_rider),
                                 color = Color.White,
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.Bold
                             )
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
-                                text = "You're among the most efficient riders this week",
+                                text = stringResource(id = R.string.social_top_rider_description),
                                 color = Color.Gray,
                                 fontSize = 12.sp,
                                 lineHeight = 14.sp
-                            )
-                            Text(
-                                text = "Based on energy efficiency",
-                                color = Color.Gray.copy(alpha = 0.5f),
-                                fontSize = 10.sp
                             )
                         }
                         Icon(
@@ -176,7 +173,7 @@ fun SocialScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "Rewards",
+                            text = stringResource(id = R.string.social_rewards),
                             color = GreenFresh,
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Medium
@@ -191,7 +188,7 @@ fun SocialScreen(
                     
                     Spacer(modifier = Modifier.height(Dimens.PaddingMedium))
 
-                    val rewards = listOf("Maintance Discounts", "Free Accessories", "Eco Badge", "More to Come")
+                    val rewards = listOf(stringResource(id = R.string.social_maintence_discounts), stringResource(id = R.string.social_free_accessories), stringResource(id = R.string.social_eco_badge), stringResource(id = R.string.social_more_to_come))
                     rewards.forEachIndexed { index, reward ->
                         Row(
                             modifier = Modifier
@@ -224,7 +221,7 @@ fun SocialScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "Join Rider Community",
+                            text = stringResource(id = R.string.social_join_community),
                             color = Color.White,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Medium

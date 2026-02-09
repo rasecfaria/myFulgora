@@ -1,12 +1,29 @@
 <resources>
     <string name="app_name">myFulgora</string>
 
+    //LOGIN
     <string name="login_welcome">Welcome back, Rider</string>
     <string name="login_username_hint">Username</string>
     <string name="login_password_hint">Password</string>
     <string name="login_forgot_password">Forgot Password?</string>
     <string name="login_button">Login</string>
     <string name="login_error_empty">Please fill all fields.</string>
+
+    //TOPBAR
+    <string name="topbar_title">Hi, </string>
+    <string name="topbar_subtitle">Ready to ride?</string>
+
+    //NAVBAR AND HAMBURGUER MENU
+    <string name="navbar_home" translatable="false">Home</string>
+    <string name="navbar_map">Map</string>
+    <string name="navbar_battery">Battery</string>
+    <string name="navbar_social" translatable="false">Social</string>
+    <string name="navbar_performance" translatable="false">Performance</string>
+    <string name="navbar_settings">Settings</string>
+    <string name="navbar_profile">Profile</string>
+    <string name="navbar_help">Help</string>
+    <string name="navbar_logout" translatable="false">Logout</string>
+
 
     //HOME
     <string name="home_status_online">Online</string>
@@ -25,15 +42,62 @@
     <string name="battery_temperature">Temperature</string>
     <string name="battery_consumption">Avg. consumption</string>
     <string name="battery_charging_cycles">Charging cycles</string>
+    <string name="battery_health_good">good</string>
+    <string name="battery_cycles">cycles</string>
+
 
 
 
 
     //SOCIAL
+    <string name="social_title">Ride Smart</string>
+    <string name="social_subtitle">Your weekly efficiency summary</string>
+    <string name="social_epoints">E-Points</string>
+    <string name="social_epoints_description">Earn through efficiency riding</string>
+    <string name="social_top_rider">Top Rider</string>
+    <string name="social_top_rider_description">You\'re among the most efficient riders this week</string>
+    <string name="social_rewards">Rewards</string>
+    <string name="social_maintence_discounts">Maintenance Discounts</string>
+    <string name="social_free_accessories">Free Accessories</string>
+    <string name="social_eco_badge">Eco Badge</string>
+    <string name="social_more_to_come">More to Come</string>
+    <string name="social_join_community">Join Rider Community</string>
+
+
 
     //PERFORMANCE
+    <string name="performance_title" translatable="false">Performance</string>
+    <string name="performance_tyre_pressure">Tyre Pressure</string>
+    <string name="performance_tyre_pressure_normal" translatable="false">Normal</string>
+    <string name="performance_tyre_pressure_front">Front 32 PSI</string>
+    <string name="performance_tyre_pressure_rear">Rear 32 PSI</string>
+    <string name="performance_next_service">Next Service</string>
+    <string name="performance_next_service_due">No service due</string>
+    <string name="performance_next_service_in">Next service in</string>
+    <string name="performance_energy_consumption">Energy Consumption</string>
+    <string name="performance_energy_consumption_last_7_days">Last 7 days</string>
+    <string name="performance_average_speed">Average Speed</string>
+    <string name="performance_average_speed_based_on_recent_trips">Based on recent trips</string>
+    <string name="performance_recent_trips">Recent Trips</string>
+    <string name="performance_view_all">View All</string>
+    <string name="performance_sustainability">Sustainability</string>
+    <string name="performance_co2_emissions">CO2 emissions avoided</string>
+    <string name="performance_saved">saved</string>
+
+
 
     //SETTINGS
+    <string name="settings_title">Settings</string>
+    <string name="settings_preferences">Preferences</string>
+    <string name="settings_units">Units</string>
+    <string name="settings_units_miles">miles</string>
+    <string name="settings_notifications">Notifications</string>
+    <string name="settings_low_battery">Low Battery Alert</string>
+    <string name="settings_style">Style</string>
+    <string name="settings_language">Language</string>
+    <string name="settings_theme">Theme(White/Dark)</string>"
+
+
 
     //MENU HAMBURGER
 

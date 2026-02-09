@@ -27,6 +27,8 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.ui.res.stringResource
+import com.example.myfulgora.R
 
 @Composable
 fun SettingsScreen(
@@ -63,7 +65,7 @@ fun SettingsScreen(
                 // 2. HEADER TEXT
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        text = "Settings",
+                        text = stringResource(id = R.string.settings_title),
                         fontSize = Dimens.TextSizeHeader,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
@@ -75,7 +77,7 @@ fun SettingsScreen(
                 // 6. PREFERENCES
                 FulgoraInfoCard {
                     Text(
-                        text = "Preferences",
+                        text = stringResource(id = R.string.settings_preferences),
                         color = GreenFresh,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Medium
@@ -121,7 +123,7 @@ fun SettingsScreen(
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
-                                    text = "miles",
+                                    text = stringResource(id = R.string.settings_units_miles),
                                     color = if (!isMetric) Color.Black else Color.Gray,
                                     fontSize = 12.sp,
                                     fontWeight = FontWeight.Bold
@@ -140,7 +142,7 @@ fun SettingsScreen(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(text = "Notifications", color = Color.White.copy(alpha = 0.8f), fontSize = 14.sp)
+                        Text(text = stringResource(id = R.string.settings_notifications), color = Color.White.copy(alpha = 0.8f), fontSize = 14.sp)
                         Switch(
                             modifier = Modifier.scale(0.85f),
                             checked = notificationsEnabled,
@@ -165,7 +167,7 @@ fun SettingsScreen(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(text = "Low battery Alert", color = Color.White.copy(alpha = 0.8f), fontSize = 14.sp)
+                        Text(text = stringResource(id = R.string.settings_low_battery), color = Color.White.copy(alpha = 0.8f), fontSize = 14.sp)
                         Switch(
                             modifier = Modifier.scale(0.85f),
                             checked = lowBatteryAlertEnabled,
@@ -187,7 +189,7 @@ fun SettingsScreen(
                 FulgoraInfoCard {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(
-                            text = "Styles",
+                            text = stringResource(id = R.string.settings_style),
                             color = GreenFresh,
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Medium
@@ -209,9 +211,9 @@ fun SettingsScreen(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(text = "Theme (White/Black)", color = Color.White.copy(alpha = 0.8f), fontSize = 14.sp)
+                            Text(text = stringResource(id = R.string.settings_theme), color = Color.White.copy(alpha = 0.8f), fontSize = 14.sp)
                             Icon(
-                                painter = painterResource(id = AppIcons.Dashboard.ArrowRight0),
+                                painter = painterResource(id = AppIcons.Actions.ArrowRight0),
                                 contentDescription = null,
                                 tint = Color.Gray,
                                 modifier = Modifier.size(20.dp)
@@ -232,7 +234,6 @@ fun LanguageSelectorRow() {
     var expanded by remember { mutableStateOf(false) }
 
     // 2. Lista de Idiomas Disponíveis
-    // O par é: "Nome que aparece" to "Código do Android"
     val languages = mapOf(
         "English" to "en",
         "Português" to "pt",
@@ -244,7 +245,6 @@ fun LanguageSelectorRow() {
     val currentLocale = AppCompatDelegate.getApplicationLocales().toLanguageTags()
     val displayLanguage = when {
         currentLocale.contains("pt") -> "Português"
-        currentLocale.contains("zh") -> "Chinese"
         else -> "English"
     }
 
@@ -258,14 +258,13 @@ fun LanguageSelectorRow() {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column {
-                Text(text = "Language", color = Color.White.copy(alpha = 0.8f), fontSize = 14.sp)
-                // Mostra a língua selecionada em pequeno
-                Text(text = displayLanguage, color = GreenFresh, fontSize = 12.sp)
-            }
+
+            Text(text = stringResource(id = R.string.settings_language), color = Color.White.copy(alpha = 0.8f), fontSize = 14.sp)
+            // Mostra a língua selecionada em pequeno
+            Text(text = displayLanguage, color = GreenFresh, fontSize = 12.sp)
 
             Icon(
-                painter = painterResource(id = AppIcons.Dashboard.ArrowRight0),
+                painter = painterResource(id = AppIcons.Actions.DropDown),
                 contentDescription = null,
                 tint = if (expanded) GreenFresh else Color.Gray, // Muda cor se aberto
                 modifier = Modifier.size(20.dp)

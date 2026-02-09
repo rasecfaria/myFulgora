@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -76,7 +77,7 @@ fun PerformanceScreen(
                 // 2. TÍTULO E SUBTÍTULO
                 Column {
                     Text(
-                        text = "Maintenance",
+                        text = stringResource(id = R.string.performance_title),
                         fontSize = Dimens.TextSizeHeader,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
@@ -139,11 +140,11 @@ fun PerformanceScreen(
                     FulgoraInfoCard(modifier = Modifier.weight(1f)) {
                         Box(modifier = Modifier.fillMaxWidth()) {
                             Column(modifier = Modifier.padding(end = Dimens.PaddingMedium)) {
-                                Text("Tyre Pressure", color = GrayLight, fontSize = Dimens.TextSizeSubTitle)
-                                Text("Normal", color = GreenFresh, fontSize = Dimens.TextSizeSmall)
+                                Text(stringResource(id = R.string.performance_tyre_pressure), color = GrayLight, fontSize = Dimens.TextSizeSubTitle)
+                                Text(stringResource(id = R.string.performance_tyre_pressure_normal), color = GreenFresh, fontSize = Dimens.TextSizeSmall)
                                 Spacer(modifier = Modifier.height(Dimens.SpacingSmallPlus))
-                                Text("Front 32 PSI", color = Color.White, fontWeight = FontWeight.Bold, fontSize = Dimens.TextSizeNormal)
-                                Text("Rear 32 PSI", color = Color.White, fontWeight = FontWeight.Bold, fontSize = Dimens.TextSizeNormal)
+                                Text(stringResource(id = R.string.performance_tyre_pressure_front), color = Color.White, fontWeight = FontWeight.Bold, fontSize = Dimens.TextSizeNormal)
+                                Text(stringResource(id = R.string.performance_tyre_pressure_rear), color = Color.White, fontWeight = FontWeight.Bold, fontSize = Dimens.TextSizeNormal)
                             }
                             Icon(
                                 painter = painterResource(id = AppIcons.Performance.tyre_pressure),
@@ -157,10 +158,10 @@ fun PerformanceScreen(
                     FulgoraInfoCard(modifier = Modifier.weight(1f)) {
                         Box(modifier = Modifier.fillMaxWidth()) {
                             Column(modifier = Modifier.padding(end = Dimens.PaddingMedium)) {
-                                Text("Next Service", color = GrayLight, fontSize = Dimens.TextSizeSubTitle)
-                                Text("No service due", color = GreenFresh, fontSize = Dimens.TextSizeSmall)
+                                Text(stringResource(id = R.string.performance_next_service), color = GrayLight, fontSize = Dimens.TextSizeSubTitle)
+                                Text(stringResource(id = R.string.performance_next_service_due), color = GreenFresh, fontSize = Dimens.TextSizeSmall)
                                 Spacer(modifier = Modifier.height(Dimens.SpacingSmallPlus))
-                                Text("Next service in", color = Color.Gray, fontSize = Dimens.TextSizeNormal)
+                                Text(stringResource(id = R.string.performance_next_service_in), color = Color.Gray, fontSize = Dimens.TextSizeNormal)
                                 Text("320 km", color = Color.White, fontWeight = FontWeight.Bold, fontSize = Dimens.TextSizeNormal)
                             }
                             Icon(
@@ -180,19 +181,19 @@ fun PerformanceScreen(
                     Box(modifier = Modifier.fillMaxWidth()) {
                         Column(modifier = Modifier.fillMaxWidth()) {
                             Column(modifier = Modifier.padding(end = 32.dp)) {
-                                Text("Performance", color = GrayLight, fontSize = Dimens.TextSizeTitle)
+                                Text(stringResource(id = R.string.performance_title), color = GrayLight, fontSize = Dimens.TextSizeTitle)
                             }
                             Spacer(modifier = Modifier.height(Dimens.SpacingSmallPlus))
                             Row(modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min), verticalAlignment = Alignment.CenterVertically) {
                                 Column(modifier = Modifier.weight(1f)) {
-                                    Text("Energy Consumption", color = DarkWhite, fontSize = Dimens.TextSizeSubTitle)
-                                    Text("Last 7 days", color = Color.Gray, fontSize = Dimens.TextSizeNormal)
+                                    Text(stringResource(id = R.string.performance_energy_consumption), color = DarkWhite, fontSize = Dimens.TextSizeSubTitle)
+                                    Text(stringResource(id = R.string.performance_energy_consumption_last_7_days), color = Color.Gray, fontSize = Dimens.TextSizeNormal)
                                     Text("0.9 kWh", color = Color.White, fontWeight = FontWeight.Bold, fontSize = Dimens.TextSizeSubTitle)
                                 }
                                 Box(modifier = Modifier.padding(horizontal = Dimens.PaddingMedium).width(1.dp).fillMaxHeight(0.8f).background(Color.Gray.copy(alpha = 0.3f)))
                                 Column(modifier = Modifier.weight(1f)) {
-                                    Text("Average Speed", color = DarkWhite, fontSize = Dimens.TextSizeSubTitle)
-                                    Text("Based on recent trips", color = Color.Gray, fontSize = Dimens.TextSizeNormal)
+                                    Text(stringResource(id = R.string.performance_average_speed), color = DarkWhite, fontSize = Dimens.TextSizeSubTitle)
+                                    Text(stringResource(id = R.string.performance_average_speed_based_on_recent_trips), color = Color.Gray, fontSize = Dimens.TextSizeNormal)
                                     Text("42 km/h", color = Color.White, fontWeight = FontWeight.Bold, fontSize = Dimens.TextSizeSubTitle)
                                 }
                             }
@@ -211,9 +212,9 @@ fun PerformanceScreen(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text("Recent Trips", color = GrayLight, fontSize = Dimens.TextSizeTitle)
+                            Text(stringResource(id = R.string.performance_recent_trips), color = GrayLight, fontSize = Dimens.TextSizeTitle)
                             Text(
-                                "View All",
+                                stringResource(id = R.string.performance_view_all),
                                 color = GreenFresh,
                                 fontSize = Dimens.TextSizeSmall,
                                 fontWeight = FontWeight.Bold,
@@ -258,9 +259,9 @@ fun PerformanceScreen(
                         verticalAlignment = Alignment.Top
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
-                            Text("Sustainability", color = GrayLight, fontSize = Dimens.TextSizeTitle)
+                            Text(stringResource(id = R.string.performance_sustainability), color = GrayLight, fontSize = Dimens.TextSizeTitle)
                             Spacer(modifier = Modifier.height(4.dp))
-                            Text("CO2 emissions avoided", color = Color.Gray, fontSize = Dimens.TextSizeSmall)
+                            Text(stringResource(id = R.string.performance_co2_emissions), color = Color.Gray, fontSize = Dimens.TextSizeSmall)
 
                             Spacer(modifier = Modifier.height(Dimens.SpacingSmall))
 
@@ -273,7 +274,7 @@ fun PerformanceScreen(
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
-                                    "saved",
+                                    stringResource(id = R.string.performance_saved),
                                     color = GreenFresh,
                                     fontSize = Dimens.TextSizeNormal,
                                     modifier = Modifier.padding(bottom = 6.dp)

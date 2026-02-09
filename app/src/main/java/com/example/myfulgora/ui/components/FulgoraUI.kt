@@ -19,10 +19,12 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.myfulgora.R
 import com.example.myfulgora.ui.theme.*
 
 @Composable
@@ -60,8 +62,8 @@ fun FulgoraBackground(
 
 @Composable
 fun FulgoraTopBar(
-    title: String = "Hi, Alex!",
-    subtitle: String = "Ready to ride?",
+    title: String = stringResource(id = R.string.topbar_title),
+    subtitle: String = stringResource(id = R.string.topbar_subtitle),
     iconSize: Dp = 24.dp,
     onNotificationClick: () -> Unit = {},
     onMenuClick: () -> Unit = {}
