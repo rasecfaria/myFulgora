@@ -38,6 +38,9 @@ import com.example.myfulgora.ui.theme.GreenFresh
 import com.example.myfulgora.ui.viewmodel.HomeUiState
 import com.example.myfulgora.ui.viewmodel.MotaViewModel
 import kotlinx.coroutines.launch
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.ui.platform.LocalContext
 
 // Classe auxiliar atualizada para aceitar Painter ou ImageVector
 data class DrawerItemData(
@@ -48,6 +51,7 @@ data class DrawerItemData(
 
 @Composable
 fun MainScreen() {
+    val context = LocalContext.current
     val viewModel: MotaViewModel = viewModel()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val uiState by viewModel.uiState.collectAsState()
@@ -72,7 +76,6 @@ fun MainScreen() {
         is HomeUiState.Success -> state.bikeState
         else -> BikeState()
     }
-
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         ModalNavigationDrawer(
             drawerState = drawerState,
@@ -131,7 +134,15 @@ fun MainScreen() {
                             DrawerItem(
                                 label = stringResource(R.string.navbar_help),
                                 icon = AppIcons.Menu.Help,
-                                onClick = { /* Help */ }
+                                onClick = {
+                                    scope.launch { drawerState.close() }
+
+                                    val intent = Intent(
+                                        Intent.ACTION_VIEW,
+                                        Uri.parse("https://amover.utad.pt/")
+                                    )
+                                    context.startActivity(intent)
+                                }
                             )
                             DrawerItem(
                                 label = stringResource(R.string.navbar_logout),

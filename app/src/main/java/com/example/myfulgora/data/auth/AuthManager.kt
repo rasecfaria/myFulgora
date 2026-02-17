@@ -2,47 +2,41 @@ package com.example.myfulgora.data.auth
 
 import android.content.Context
 import android.util.Log
+import com.example.myfulgora.data.repository.TokenRepository
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
-import java.io.IOException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
 
 class AuthManager(context: Context) {
 
-    private val storage = AuthStorage(context)
+    private val tokenRepository = TokenRepository(context)
     private val client = OkHttpClient()
 
     companion object {
-        // Confirma se este IP está correto para a tua VPN/Configuração
         private const val KEYCLOAK_URL = "http://172.20.0.201:8081/realms/Amover/protocol/openid-connect/token"
         private const val CLIENT_ID = "mota-mobile"
-        // Se o teu cliente no keycloak exigir 'client_secret', tens de adicionar aqui.
-        // Normalmente para mobile apps é "public" e não precisa.
     }
 
-    // Função que faz o login direto (user + pass)
     suspend fun loginDireto(user: String, pass: String): Boolean {
         return withContext(Dispatchers.IO) {
             try {
-                // 1. Construir o corpo do pedido
                 val formBody = FormBody.Builder()
                     .add("client_id", CLIENT_ID)
                     .add("username", user)
                     .add("password", pass)
-                    .add("grant_type", "password") // O segredo para o login direto
+                    .add("grant_type", "password")
                     .add("scope", "openid profile email")
                     .build()
 
-                // 2. Construir o pedido
                 val request = Request.Builder()
                     .url(KEYCLOAK_URL)
                     .post(formBody)
                     .build()
 
-                // 3. Executar
                 val response = client.newCall(request).execute()
                 val responseBody = response.body?.string()
 
@@ -50,16 +44,13 @@ class AuthManager(context: Context) {
                     val json = JSONObject(responseBody)
                     val accessToken = json.getString("access_token")
 
-                    // Guardar o token (podes melhorar o AuthStorage depois para guardar só a string)
-                    // Por agora, para não partir o resto, vamos guardar de forma simples ou adaptar o storage
-                    // Nota: O AuthStorage antigo esperava um objeto complexo.
-                    // Vamos simplificar: guarda o token numa variavel estática ou SharedPrefs simples aqui.
-                    TokenStore.accessToken = accessToken
+                    // Guardar o token de forma persistente no DataStore
+                    tokenRepository.saveToken(accessToken)
 
-                    Log.d("AuthManager", "Login com sucesso! Token: $accessToken")
+                    Log.d("AuthManager", "Login com sucesso!")
                     return@withContext true
                 } else {
-                    Log.e("AuthManager", "Erro no login: ${response.code} - $responseBody")
+                    Log.e("AuthManager", "Erro no login: ${response.code}")
                     return@withContext false
                 }
 
@@ -70,12 +61,11 @@ class AuthManager(context: Context) {
         }
     }
 
-    fun isLoggedIn(): Boolean {
-        return !TokenStore.accessToken.isNullOrEmpty()
+    suspend fun isLoggedIn(): Boolean {
+        return tokenRepository.accessToken.firstOrNull() != null
     }
-}
 
-// Um objeto simples para guardar o token em memória enquanto a app está aberta
-object TokenStore {
-    var accessToken: String? = null
+    suspend fun logout() {
+        tokenRepository.clearToken()
+    }
 }

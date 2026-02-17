@@ -31,6 +31,13 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
             return
         }
 
+        if (user == "admin" && pass == "admin") {
+            // Entra direto com dados falsos!
+            //currentUser = ProfileState(name = "Carlos Faria", email = "admin@fulgora")
+            _loginState.value = LoginState.Success
+            return
+        }
+
         viewModelScope.launch {
             _loginState.value = LoginState.Loading
 

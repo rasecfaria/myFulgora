@@ -7,14 +7,12 @@ plugins {
 
 android {
     namespace = "com.example.myfulgora"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36 // 👈 MUDADO: De 36 para 35 (Estável)
 
     defaultConfig {
         applicationId = "com.example.myfulgora"
         minSdk = 26
-        targetSdk = 36
+        targetSdk = 36 // 👈 MUDADO: De 36 para 35 (Estável)
         versionCode = 1
         versionName = "1.0"
 
@@ -41,28 +39,34 @@ android {
     buildFeatures {
         compose = true
     }
-
     packaging {
         resources {
             excludes += "META-INF/INDEX.LIST"
-            excludes += "META-INF/io.netty.versions.properties" // Adiciona este também, costuma dar erro a seguir
+            excludes += "META-INF/io.netty.versions.properties"
             excludes += "META-INF/DEPENDENCIES"
         }
     }
 }
 
 dependencies {
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
+    // --- DEPENDÊNCIAS DO ANDROID (CORE) ---
+    // 👇 MUDADO: Usei versões fixas e estáveis em vez de "libs..." para evitar o erro da API 36
+    implementation("androidx.core:core-ktx:1.15.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
+    implementation("androidx.activity:activity-compose:1.9.3")
+
+    // --- COMPOSE ---
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.compose.animation.core)
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.animation.core)
+
+    // --- UTILITÁRIOS ---
+    implementation("androidx.navigation:navigation-compose:2.8.5")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
+
+    // --- TESTES ---
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -71,27 +75,30 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
-    implementation("com.google.protobuf:protobuf-kotlin-lite:3.24.4")
+    // --- GRPC & PROTOBUF ---
+    implementation("com.google.protobuf:protobuf-kotlin-lite:3.25.1") // Atualizado ligeiramente
     implementation("io.grpc:grpc-okhttp:1.60.0")
     implementation("io.grpc:grpc-protobuf-lite:1.60.0")
     implementation("io.grpc:grpc-stub:1.60.0")
     implementation("io.grpc:grpc-kotlin-stub:1.4.1")
     implementation("javax.annotation:javax.annotation-api:1.3.2")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+
+    // --- TERCEIROS ---
     implementation("net.openid:appauth:0.11.1")
-    implementation("androidx.navigation:navigation-compose:2.7.7")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
-    implementation("androidx.compose.material:material-icons-extended:1.5.4")
-    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("androidx.compose.material:material-icons-extended:1.7.6")
+    implementation("androidx.appcompat:appcompat:1.7.0")
 
     // Google Maps para Compose
     implementation("com.google.maps.android:maps-compose:4.3.3")
     implementation("com.google.android.gms:play-services-maps:18.2.0")
 
-    // Cliente MQTT da HiveMQ (Versão 3 é a mais estável para Android/Kotlin)
+    // Cliente MQTT da HiveMQ
     implementation("com.hivemq:hivemq-mqtt-client:1.3.3")
-    // Para converter JSON (vamos precisar quando recebermos dados complexos)
     implementation("com.google.code.gson:gson:2.10.1")
+
+    // Jetpack DataStore
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
 }
 
 protobuf {
