@@ -103,7 +103,7 @@ fun HomeScreen(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = if (isLocked) "${state.batteryPercentage}%" else "1hr 10m 4s remaining",
+                            text = "${state.batteryPercentage}%",
                             color = Color.White,
                             fontSize = 14.sp
                         )

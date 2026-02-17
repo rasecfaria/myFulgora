@@ -24,11 +24,18 @@ import com.example.myfulgora.ui.theme.AppIcons
 import com.example.myfulgora.ui.theme.Dimens
 import com.example.myfulgora.ui.theme.GreenFresh
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.material.icons.filled.Check
 import androidx.core.os.LocaleListCompat
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.ui.res.stringResource
 import com.example.myfulgora.R
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.platform.LocalConfiguration
 
 @Composable
 fun SettingsScreen(
@@ -203,22 +210,7 @@ fun SettingsScreen(
                         HorizontalDivider(color = Color.Gray.copy(alpha = 0.1f))
 
                         // --- ITEM 2: THEME (Ainda estático por enquanto) ---
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 12.dp)
-                                .clickable { /* Lógica para mudar tema futuro */ },
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(text = stringResource(id = R.string.settings_theme), color = Color.White.copy(alpha = 0.8f), fontSize = 14.sp)
-                            Icon(
-                                painter = painterResource(id = AppIcons.Actions.ArrowRight0),
-                                contentDescription = null,
-                                tint = Color.Gray,
-                                modifier = Modifier.size(20.dp)
-                            )
-                        }
+                        ThemeSelectorRow()
                     }
                 }
 
@@ -230,67 +222,109 @@ fun SettingsScreen(
 
 @Composable
 fun LanguageSelectorRow() {
-    // 1. Estado do Menu (Aberto ou Fechado)
+    // 1. Estado do Menu
     var expanded by remember { mutableStateOf(false) }
 
-    // 2. Lista de Idiomas Disponíveis
+    // 2. Animação da rotação da seta
+    val rotationState by animateFloatAsState(
+        targetValue = if (expanded) 180f else 0f,
+        label = "ArrowRotation"
+    )
+
+    // 3. Lista de Idiomas
     val languages = mapOf(
         "English" to "en",
         "Português" to "pt",
         "Chinese" to "zh"
     )
 
-    // Detectar a língua atual (apenas para mostrar o texto correto)
-    // Nota: Isto é simplificado. Num cenário real, podes guardar isto em DataStore.
+    // 4. Detetar língua atual
     val currentLocale = AppCompatDelegate.getApplicationLocales().toLanguageTags()
     val displayLanguage = when {
         currentLocale.contains("pt") -> "Português"
+        currentLocale.contains("zh") -> "Chinese"
         else -> "English"
     }
 
-    Box(modifier = Modifier.fillMaxWidth()) {
-        // A Linha Clicável
+    // CONTAINER PRINCIPAL (Agora é uma Coluna com animação de tamanho)
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .animateContentSize() // 👈 Faz a animação suave ao abrir/fechar
+    ) {
+
+        // --- CABEÇALHO (O que está sempre visível) ---
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable { expanded = true } // 👇 Abre o menu ao clicar
-                .padding(vertical = 12.dp),
+                .clickable { expanded = !expanded } // Alterna entre aberto/fechado
+                .padding(vertical = 12.dp), // Padding do clique
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
+            Text(
+                text = stringResource(id = R.string.settings_language), // Cria esta string se não existir, ou usa "Language"
+                color = Color.White.copy(alpha = 0.8f),
+                fontSize = 14.sp
+            )
+            Text(
+                text = displayLanguage,
+                color = GreenFresh,
+                fontSize = 12.sp
+            )
 
-            Text(text = stringResource(id = R.string.settings_language), color = Color.White.copy(alpha = 0.8f), fontSize = 14.sp)
-            // Mostra a língua selecionada em pequeno
-            Text(text = displayLanguage, color = GreenFresh, fontSize = 12.sp)
-
+            // Lado Direito: Seta que roda
             Icon(
-                painter = painterResource(id = AppIcons.Actions.DropDown),
+                painter = painterResource(id = AppIcons.Actions.DropDown), // Confirma se tens este ícone
                 contentDescription = null,
-                tint = if (expanded) GreenFresh else Color.Gray, // Muda cor se aberto
-                modifier = Modifier.size(20.dp)
+                tint = if (expanded) GreenFresh else Color.Gray,
+                modifier = Modifier
+                    .size(24.dp)
+                    .rotate(rotationState) // 👈 Aplica a rotação animada
             )
         }
 
-        // O Menu Dropdown (Aparece por cima quando expanded = true)
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            modifier = Modifier.background(Color(0xFF2A2A2A)) // Fundo escuro do menu
-        ) {
-            languages.forEach { (name, code) ->
-                DropdownMenuItem(
-                    text = {
+        // --- CORPO (Opções que aparecem quando expanded = true) ---
+        if (expanded) {
+            // Uma linha separadora subtil
+            HorizontalDivider(color = Color.Gray.copy(alpha = 0.1f))
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+            ) {
+                languages.forEach { (name, code) ->
+                    val isSelected = name == displayLanguage
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                changeAppLanguage(code)
+                                expanded = false
+                            }
+                            .padding(vertical = 12.dp, horizontal = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Text(
                             text = name,
-                            color = if (name == displayLanguage) GreenFresh else Color.White
+                            color = if (isSelected) GreenFresh else Color.White,
+                            fontSize = 14.sp
                         )
-                    },
-                    onClick = {
-                        expanded = false
-                        // 👇 A MAGIA QUE MUDA O IDIOMA DA APP
-                        changeAppLanguage(code)
+
+                        // Mostra um "Visto" se estiver selecionado
+                        if (isSelected) {
+                            Icon(
+                                imageVector = androidx.compose.material.icons.Icons.Default.Check, // Ou usa um ícone teu
+                                contentDescription = "Selected",
+                                tint = GreenFresh,
+                                modifier = Modifier.size(16.dp)
+                            )
+                        }
                     }
-                )
+                }
             }
         }
     }
@@ -300,4 +334,111 @@ fun LanguageSelectorRow() {
 fun changeAppLanguage(languageCode: String) {
     val appLocale = LocaleListCompat.forLanguageTags(languageCode)
     AppCompatDelegate.setApplicationLocales(appLocale)
+}
+
+@Composable
+fun ThemeSelectorRow() {
+    // 1. Estado de Expansão
+    var expanded by remember { mutableStateOf(false) }
+
+    // 2. Animação da Seta
+    val rotationState by animateFloatAsState(
+        targetValue = if (expanded) 180f else 0f,
+        label = "ArrowRotation"
+    )
+
+    // 3. Opções de Tema
+    // Mapeamos o Nome para o Código do Android
+    val themeOptions = listOf(
+        "System Default" to AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM,
+        "Light Mode" to AppCompatDelegate.MODE_NIGHT_NO,
+        "Dark Mode" to AppCompatDelegate.MODE_NIGHT_YES
+    )
+
+    // 4. Detetar o modo atual
+    val currentMode = AppCompatDelegate.getDefaultNightMode()
+
+    // Converter o código atual para texto bonito
+    val displayTheme = when (currentMode) {
+        AppCompatDelegate.MODE_NIGHT_NO -> "Light Mode"
+        AppCompatDelegate.MODE_NIGHT_YES -> "Dark Mode"
+        else -> "System Default"
+    }
+
+    // CONTAINER PRINCIPAL (Coluna com animação)
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .animateContentSize() // 👈 A magia da animação suave
+    ) {
+
+        // --- CABEÇALHO (Sempre visível) ---
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { expanded = !expanded }
+                .padding(vertical = 12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Theme", // Podes usar stringResource(R.string.settings_theme)
+                color = Color.White.copy(alpha = 0.8f),
+                fontSize = 14.sp
+            )
+            Text(
+                text = displayTheme,
+                color = GreenFresh,
+                fontSize = 12.sp
+            )
+
+            Icon(
+                painter = painterResource(id = AppIcons.Actions.DropDown), // O mesmo ícone da seta
+                contentDescription = null,
+                tint = if (expanded) GreenFresh else Color.Gray,
+                modifier = Modifier
+                    .size(24.dp)
+                    .rotate(rotationState)
+            )
+        }
+
+        // --- LISTA DE OPÇÕES (Visível apenas se expanded = true) ---
+        if (expanded) {
+            HorizontalDivider(color = Color.Gray.copy(alpha = 0.1f))
+
+            Column(modifier = Modifier.padding(vertical = 8.dp)) {
+                themeOptions.forEach { (name, mode) ->
+                    val isSelected = name == displayTheme
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                // 👇 AÇÃO DE MUDANÇA DE TEMA
+                                AppCompatDelegate.setDefaultNightMode(mode)
+                                expanded = false
+                            }
+                            .padding(vertical = 12.dp, horizontal = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = name,
+                            color = if (isSelected) GreenFresh else Color.White,
+                            fontSize = 14.sp
+                        )
+
+                        if (isSelected) {
+                            Icon(
+                                imageVector = androidx.compose.material.icons.Icons.Default.Check,
+                                contentDescription = "Selected",
+                                tint = GreenFresh,
+                                modifier = Modifier.size(16.dp)
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
