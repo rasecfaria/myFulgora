@@ -41,6 +41,7 @@ import kotlinx.coroutines.launch
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.ui.platform.LocalContext
+import com.example.myfulgora.ui.screens.tabs.profile.ProfileScreen
 
 // Classe auxiliar atualizada para aceitar Painter ou ImageVector
 data class DrawerItemData(
